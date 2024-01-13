@@ -6,7 +6,9 @@ document.querySelector(".post").addEventListener("click", ()=>{
     let sendObj = {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "username": "ojasmaywade16@gmail.com",
+            "password": "123456"
         },
         body: JSON.stringify({ "title": val_1, "completed": false, "description": val_2 })
        
@@ -35,13 +37,18 @@ document.querySelector(".post").addEventListener("click", ()=>{
    function getData(){
     let sendObj = {
         method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "username": "ojasmaywade16@gmail.com",
+            "password": "123456"
+        }
     }
     fetch("http://localhost:3000/todos/", sendObj)
     .then(response => response.json())
     .then(res => 
         {   
             var parentNode = document.querySelector(".to-do")
-            for(i=0;i<5;i++){
+            for(i=0;i<15;i++){
             var childElement = document.createElement("div")
             var grandChildElement1 = document.createElement("p");
             var grandChildElement2 = document.createElement("p");
@@ -49,7 +56,7 @@ document.querySelector(".post").addEventListener("click", ()=>{
             grandChildElement1.innerHTML = JSON.stringify(res[i].title);
             grandChildElement2.innerHTML = JSON.stringify(res[i].description);
             grandChildElement3.innerHTML = "delete";
-           // grandChildElement3.setAttribute("id", i);
+            grandChildElement3.setAttribute("id", i);
             document.querySelectorAll("button")[i].addEventListener("click", (event)=>{
                 var id = event.target.id;
                 let sendObj = {

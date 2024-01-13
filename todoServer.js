@@ -1,4 +1,5 @@
- import express from 'express';
+import 'dotenv/config';
+import express from 'express';
  const app = express();
  import bodyParser from 'body-parser';
  import cors from 'cors';
@@ -6,14 +7,52 @@
  import { fileURLToPath } from 'url';
  import { dirname } from 'path';
  import path from "path";
+ import mongoose from "mongoose";
  const port = 3000;
- let id=0;
- var arr = [];
+
+ //Authentication MiddleWare
+ var userAuthentication = async(req,res,next) =>{
+  let {username, password} = req.headers;
+  let auth = await Auth.findOne({username});
+  if(auth){
+    if(auth.username === username && auth.password === password){
+      
+      next();
+    }else {
+      res.send("login Failed");
+    }
+  }else {
+    res.send("User not registered");
+  }
+ }
+  
  var a;
+ //Mongoose Schema
+ const todoSchema = new mongoose.Schema({
+  title: String,
+  description: String
+ })
+
+ const authentication = new mongoose.Schema({
+  username: String,
+  password: String,
+  userTodo: [{type: mongoose.Schema.Types.ObjectId, ref:'Todo'}]
+ })
+ //Mongoose Model
+ const Todo = mongoose.model('Todo',todoSchema);
+ const Auth = mongoose.model('Auth', authentication)
+ 
+ //Mongoose Connect
+ mongoose.connect('mongodb+srv://ojasmaywade16:weuary2cle@cluster0.mrstiw8.mongodb.net/todos');
+
+
  app.use(bodyParser.json());
+
+ //Cors
  const allowedOrigins = ['http://127.0.0.1:5500']
  app.use(cors({origin: allowedOrigins}));
 
+ //Sending HTML file to the specific route
  console.log(dirname(fileURLToPath(import.meta.url)));
  const __filename = fileURLToPath(import.meta.url);
  const __dirname = dirname(__filename);
@@ -23,86 +62,87 @@
   res.sendFile(path.join(__dirname, 'public', "todo.html"))
  })
 
-function allTodos(req,res){
- fs.readFile("./files/b.txt", "utf-8", (err,data)=>{
-  if(err) throw err;
-  res.send(JSON.parse(data));
+ //User Sign-Up Route
+ app.post('/sign-up', async (req,res)=>{
+  let {username} = req.body;
+  let auth = await Auth.findOne({username});
+  if(auth){
+    res.send("User Already Exists");
+  } else{
+    const auth = new Auth(req.body);
+    await auth.save();
+    res.send("Successfully Registered");  
+  }
  })
- }
 
-function retriveTodo(req,res){
+ //User Sign-In Route
+ //here we have to check the username and password both send by the user with our database
+ app.post('/sign-in', userAuthentication, async(req,res)=>{
+  res.send("Login Successful");
+ })
+
+//Get-All Todo Route
+ app.get('/todos', userAuthentication,  async (req,res)=> {
+  const todos = await Todo.find({});
+   res.json(todos);
+  });
+
+  //Get-Todo by Id Route
+ app.get('/todos/:id', userAuthentication, async (req,res)=>{
   let reqId = req.params.id;
-  
-  fs.readFile("./files/b.txt", "utf-8", (err,data)=>{
-    if(err) throw err;
-    if(JSON.parse(data)[reqId]==undefined){
+  console.log(reqId);
+  const todo = await Todo.findById(reqId);
+console.log(todo);
+    if(todo==undefined){
       res.status(404).send("To Do Item not found");
     }else {
-    res.send(JSON.parse(data)[reqId]);
+    res.send(todo);
     }
-})
-}
+});
 
-function createTodos(req,res){
- arr[id] = req.body;
- a = JSON.stringify(arr);
- // convert very thing into a string refer notes
- fs.writeFile("./files/b.txt", a, (err)=>{
-  if(err) throw err;
-  console.log("File have been saved !!");
-  res.status(201).json(req.body);
-  id++;
-})
-}
+//Post todo
+ app.post('/todos', userAuthentication, async (req,res)=>{
+  const todo = new Todo(req.body);
+  await todo.save();
+   console.log("File have been saved !!");
+   res.status(201).json(req.body);
+ })
 
-function updateTodo(req,res){
-  let reqId = req.params.id;
-  if(JSON.parse(a)[reqId]==undefined){
+//Update todo
+ app.put('/todos/:id', userAuthentication, async (req,res)=>{
+  const todo = await Todo.findByIdAndUpdate(req.params.id, req.body, {new: true});
+   if(todo){
+    res.status(200).send("item is updated")
+   } else{
     res.status(404).send("To Do not found");
-  }else {
-  arr[reqId] = req.body;
-  a = JSON.stringify(arr);
-  fs.writeFile("./files/b.txt", a, (err)=>{
-    if(err) throw err;
-    console.log("File have been updated");
+   }
   })
-  res.status(200).send("item is updated");
-}
-}
-
-function deleteTodo(req,res){
-  let reqId = req.params.id;
-  if(id>=reqId){
-    arr.splice(reqId,1);
-    id--;
-    a = JSON.stringify(arr);
-    fs.writeFile("./files/b.txt", a, (err)=>{
-      if(err) throw err;
-      console.log("File have been updated");
-    })
+  
+  
+// Delete Todo
+ app.delete('/todos/:id', userAuthentication, async (req,res)=>{
+  const todo = await Todo.findByIdAndDelete(req.params.id)
+  // let reqId = req.params.id;
+  if(todo){
     res.status(200).send("item is deleted");
-  }else if(id<reqId){
+  }else{
     res.status(404).send("To Do not found");
   }
-}
+})
 
- app.get('/todos', allTodos)
- app.get('/todos/:id', retriveTodo)
- app.post('/todos', createTodos)
- app.put('/todos/:id', updateTodo)
- app.delete('/todos/:id', deleteTodo)
+//Error for rest routes
  app.get('/:route', (req,res)=>{
   res.status(404).send("Page Not found");
  })
 
 
-app.listen(port, ()=>{
-  console.log(`The server is running on port ${port}`);
-  fs.readFile("./files/b.txt", "utf8", (err, data)=>{
-    a = data;
-    arr = JSON.parse(data);
-    id = arr.length;
-  })
+app.listen(process.env.PORT, ()=>{
+  console.log(`The server is running on port ${process.env.PORT}`);
+  // fs.readFile("./files/b.txt", "utf8", (err, data)=>{
+  //   a = data;
+  //   arr = JSON.parse(data);
+  //   id = arr.length;
+  // })
  })
 
 export default app;
