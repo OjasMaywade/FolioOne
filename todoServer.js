@@ -33,14 +33,19 @@ import express from 'express';
   description: String
  })
 
- const authentication = new mongoose.Schema({
+ const userSchema = new mongoose.Schema({
   username: String,
-  password: String,
-  userTodo: [{type: mongoose.Schema.Types.ObjectId, ref:'Todo'}]
+  password: {
+    type: String,
+    required: true,
+    minLength: [8, 'password is to short, password length should be 8 to 14 character'],
+    maxLength: 14
+},
+  todo: [{type: mongoose.Schema.Types.ObjectId, ref: 'Todo' }]
  })
  //Mongoose Model
  const Todo = mongoose.model('Todo',todoSchema);
- const Auth = mongoose.model('Auth', authentication)
+ const Auth = mongoose.model('Auth', userSchema)
  
  //Mongoose Connect
  mongoose.connect('mongodb+srv://ojasmaywade16:weuary2cle@cluster0.mrstiw8.mongodb.net/todos');

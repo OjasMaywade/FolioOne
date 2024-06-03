@@ -1,7 +1,7 @@
 {
-  "name": "02-nodejs",
+  "name": "todo_app_backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is a Todo App Backend ",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -10,24 +10,30 @@
     "test-todoServer": "./node_modules/jest/bin/jest.js ./tests/todoServer.test.js",
     "test-authenticationServer": "./node_modules/jest/bin/jest.js ./tests/authenticationServer.test.js",
     "test-all": "./node_modules/jest/bin/jest.js ./tests/",
-    "start": "node todoServer.js"
+    "start": "node todoServer.js",
+    "dev": "nodemon todoServer.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Ojas Maywade",
   "license": "ISC",
   "devDependencies": {
     "jest": "^29.5.0",
+    "nodemon": "^3.1.2",
     "supertest": "^6.3.3"
   },
   "jest": {
     "testTimeout": 10000
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cloudinary": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "env": "^0.0.2",
     "express": "^4.18.2",
+    "json-web-token": "^3.2.0",
     "mongoose": "^8.0.3",
+    "multer": "^1.4.5-lts.1",
     "uuid": "^9.0.0"
   }
 }
