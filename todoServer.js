@@ -17,7 +17,10 @@ import { dirname } from 'path';
 import path from "path";
 import mongoose from "mongoose";
 import z from "zod";
-const port = 3000;
+import { Octokit } from 'octokit';
+const octokit = new Octokit({
+    auth: process.env.GITHUB_ACCESS_TOKEN
+});
 //Authentication MiddleWare
 var userAuthentication = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     let { username, password } = req.headers;
@@ -139,9 +142,46 @@ app.delete('/todos/:id', userAuthentication, (req, res) => __awaiter(void 0, voi
     }
 }));
 //Error for rest routes
-app.get('/:route', (req, res) => {
-    res.status(404).send("Page Not found");
-});
+/*app.get('/:route', (req,res)=>{
+ res.status(404).send("Page Not found");
+})*/
+//Github routes
+app.get('/github', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userinfo = yield octokit.request('GET /user', {
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        }
+    });
+    res.send(userinfo);
+}));
+app.get('/github/:repo', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const repoInfo = yield octokit.request('GET /repos/OjasMaywade/Dice-Game', {
+        owner: 'OjasMaywade',
+        repo: 'Dice-Game',
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        }
+    });
+    res.send(repoInfo);
+}));
+app.get('/github/:repo/issues', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const issueInfo = yield octokit.request('POST /repos/OjasMaywade/Dice-Game/issues', {
+        owner: 'OjasMaywade',
+        repo: 'Dice-Game',
+        title: 'Found a bug',
+        body: 'I\'m having a problem with this.',
+        assignees: [
+            'OjasMaywade'
+        ],
+        labels: [
+            'bug'
+        ],
+        headers: {
+            'X-GitHub-Api-Version': '2022-11-28'
+        }
+    });
+    res.send(issueInfo);
+}));
 app.listen(process.env.PORT, () => {
     console.log(`The server is running on port ${process.env.PORT}`);
     // fs.readFile("./files/b.txt", "utf8", (err, data)=>{

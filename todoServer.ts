@@ -8,12 +8,15 @@ import express from 'express';
  import { dirname } from 'path';
  import path from "path";
  import mongoose from "mongoose";
- import z from "zod";
+ import z, { any } from "zod";
  import {Request,Response,NextFunction} from 'express';
 import { Interface } from 'readline';
 import { RequestHandler } from 'express';
- const port = 3000;
+import { Octokit } from 'octokit';
 
+const octokit = new Octokit({
+  auth: process.env.GITHUB_ACCESS_TOKEN
+})
  interface login{
   username: string;
   password: string;
@@ -153,10 +156,50 @@ let titleInputProps = z.object({
 })
 
 //Error for rest routes
- app.get('/:route', (req,res)=>{
+ /*app.get('/:route', (req,res)=>{
   res.status(404).send("Page Not found");
+ })*/
+
+ //Github routes
+
+ app.get('/github', async (req,res)=>{
+  const userinfo = await octokit.request('GET /user', {
+    headers: {
+      'X-GitHub-Api-Version': '2022-11-28'
+    }
+  })
+  res.send(userinfo);
  })
 
+ app.get('/github/:repo', async(req,res)=>{
+  const repoInfo = await octokit.request('GET /repos/OjasMaywade/Dice-Game', {
+    owner: 'OjasMaywade',
+    repo: 'Dice-Game',
+    headers: {
+      'X-GitHub-Api-Version': '2022-11-28'
+    }
+  })
+  res.send(repoInfo)
+ })
+
+ app.get('/github/:repo/issues', async(req,res)=>{
+  const issueInfo = await octokit.request('POST /repos/OjasMaywade/Dice-Game/issues', {
+    owner: 'OjasMaywade',
+    repo: 'Dice-Game',
+    title: 'Found a bug',
+    body: 'I\'m having a problem with this.',
+    assignees: [
+      'OjasMaywade'
+    ],
+    labels: [
+      'bug'
+    ],
+    headers: {
+      'X-GitHub-Api-Version': '2022-11-28'
+    }
+  })
+  res.send(issueInfo)
+ })
 
 app.listen(process.env.PORT, ()=>{
   console.log(`The server is running on port ${process.env.PORT}`);
