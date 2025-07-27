@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import express from 'express';
  const app = express();
  import bodyParser from 'body-parser';
@@ -9,11 +8,27 @@ import express from 'express';
  import path from "path";
  import mongoose from "mongoose";
  import z, { any } from "zod";
- import {Request,Response,NextFunction} from 'express';
-import { Interface } from 'readline';
 import { RequestHandler } from 'express';
 import { Octokit } from 'octokit';
+import querystring from 'query-string';
+import session from 'express-session';
 
+app.use(session({
+  secret: 'a87b3a5d72!@#$%^&*()xmncbqwe0198!@#super-secure-key',
+  resave: false,
+  saveUninitialized: true
+}));
+
+
+function generateRandomString(length: number): string {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+console.log(process.env.GITHUB_ACCESS_TOKEN);
 const octokit = new Octokit({
   auth: process.env.GITHUB_ACCESS_TOKEN
 })
@@ -201,6 +216,93 @@ let titleInputProps = z.object({
   res.send(issueInfo)
  })
 
+ // Spotify API
+let client_id = process.env.CLIENT_ID;
+let client_secret = process.env.CLIENT_SECRET;
+//let redirectUrl = 'http://127.0.0.1:3000/callback';
+let url = 'https://accounts.spotify.com/api/token';
+
+app.get('/login',(req,res)=>{
+    let state = generateRandomString(16);
+    let scope = 'user-read-private user-read-email';
+
+  res.redirect('https://accounts.spotify.com/authorize?' +
+    querystring.stringify({
+      response_type: 'code',
+      client_id: client_id,
+      scope: scope,
+      redirect_uri: process.env.REDIRECT_URI,
+      state: state
+    }));
+})
+
+app.get('/callback', async (req, res)=> {
+
+  const code = typeof req.query.code === 'string' ? req.query.code : '';
+  let state = req.query.state || null;
+
+  if (state === null) {
+    res.redirect('/#' +
+      querystring.stringify({
+        error: 'state_mismatch'
+      }));
+  } else {
+   const params = new URLSearchParams();
+  params.append('code', code);
+  params.append('redirect_uri', process.env.REDIRECT_URI || '');
+  params.append('grant_type', 'authorization_code');
+    //const params = new URLSearchParams(paramsObj);
+
+    let authOptions = {
+  method:"POST",
+  headers: {
+    'Authorization': 'Basic ' + (Buffer.from(`${client_id}:${client_secret}`).toString('base64')),
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  body: params,
+  }
+    let apiResponse = await fetch(url, authOptions);
+
+   /* if (!apiResponse.ok) {
+      throw new Error(`HTTP ${apiResponse.status} - ${apiResponse.statusText}`);
+    }*/
+    console.log(apiResponse)
+    let data = await apiResponse.json();
+    console.log('Access Token:', data.access_token);
+    var accessToken = data.access_token;
+    return data.access_token;
+  }
+});
+
+
+// let access_token = async () => {
+  
+//     let apiResponse = await fetch(url, authOptions);
+
+//    /* if (!apiResponse.ok) {
+//       throw new Error(`HTTP ${apiResponse.status} - ${apiResponse.statusText}`);
+//     }*/
+//     console.log(apiResponse)
+//     let data = await apiResponse.json();
+//     console.log('Access Token:', data.access_token);
+//    // var accessToken = data.access_token;
+//     return data.access_token;
+// };
+ 
+// console.log(`token: ${accessToken}`)
+
+// app.get('/spotify', async (req,res)=>{
+//   //let accessToken = await access_token();
+//   console.log(`token: ${accessToken}`)
+//   let getTracks = await fetch('https://api.spotify.com/v1/me/top/tracks',{
+//     method:'GET',
+//     headers: {Authorization:`Bearer ${accessToken}`}
+//   })
+//   let tracks = await getTracks.json();
+//   res.send(tracks)
+// }
+// )
+
 app.listen(process.env.PORT, ()=>{
   console.log(`The server is running on port ${process.env.PORT}`);
   // fs.readFile("./files/b.txt", "utf8", (err, data)=>{
@@ -211,5 +313,7 @@ app.listen(process.env.PORT, ()=>{
  })
 
 export default app;
+
+
 
  
