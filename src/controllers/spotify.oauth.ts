@@ -37,9 +37,9 @@ const callback = async(req,res)=>{
         }
     });
 
-    access_token = token.data;
+    access_token = token.data.access_token;
     console.log(access_token);  
-
+    res.status(200).send(access_token)
 }
 
-export {redirectFunction, callback};
+export {access_token, redirectFunction, callback};

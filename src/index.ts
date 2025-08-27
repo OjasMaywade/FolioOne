@@ -1,5 +1,5 @@
 import { app } from "./app.js";
-import { db } from "./db/db.js";
+import { db } from "./db/index.db.js";
 import  {sql} from "kysely";
 
 ;(async()=>{

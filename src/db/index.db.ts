@@ -1,5 +1,5 @@
 import { createPool } from "mysql2";
-import { DB } from "../types/db.type.js";
+import { DB } from "./schema.db.js";
 import { Kysely, MysqlDialect } from "kysely";
 
 const dialect = new MysqlDialect({

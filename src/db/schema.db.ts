@@ -84,7 +84,7 @@ export interface User {
   lastname: string;
   password: string;
   profilepic: string | null;
-  refreshtoken: string;
+  refreshtoken: string | null;
   updated_at: Generated<Date | null>;
   username: string;
 }

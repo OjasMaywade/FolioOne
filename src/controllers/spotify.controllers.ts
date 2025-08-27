@@ -1,6 +1,6 @@
 import axios from "axios";
-// import { access_token } from "./spotify.oauth.js";
-let access_token = '';
+import { access_token } from "./spotify.oauth.js";
+// let access_token = '';
 
 const topTenTracks = async(req,res)=>{
     const aboutMe = await axios.get('https://api.spotify.com/v1/me',{
