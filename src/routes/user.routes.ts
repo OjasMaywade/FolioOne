@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, register, logoutUser, updateProfile} from "../controllers/user.controllers.js";
+import { login, register, logoutUser, updateProfile, me} from "../controllers/user.controllers.js";
 import { auth } from "../middlewares/auth.middleware.js";
 const router = Router();
 
@@ -17,7 +17,7 @@ router.route('/refreshAccessToken').post();
 
 router.route('/resetPassword').post();
 
-router.route('/getCurrentUser').get();
+router.route('/me').get(auth, me);
 
 router.route('/updateProfilePic').patch();
 

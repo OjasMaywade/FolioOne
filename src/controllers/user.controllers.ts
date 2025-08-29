@@ -1,26 +1,7 @@
-import { string } from "zod/v4";
 import { db } from "../db/index.db.js";
-// import { User } from "../db/schema.db.js";
 import {hashPassword, comparePassword} from '../utils/bcrypt.js'
-import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
-
-
-const generateAccessTokenAndRefreshToken = async (userData, userId)=>{
-    console.log(userId)
-    let accessToken = await generateAccessToken(userData);
-    let refreshToken = await generateRefreshToken(userId);
-
-    const insertRefreshToken = await db
-    .updateTable('user')
-    .set({
-        refreshtoken: refreshToken
-    })
-    .where('email','=',userData.email)
-    .executeTakeFirst();
-
-    console.log(insertRefreshToken)
-    return {accessToken, refreshToken}
-}
+import {userAllInfo, createUser} from "../db/queries/user.query.js"
+import { generateAccessTokenAndRefreshToken } from "../services/auth.service.js";
 
 const register = async (req, res)=>{
     try {
@@ -44,19 +25,21 @@ const register = async (req, res)=>{
     }
 
     const hash = await hashPassword(req.body.password);
-    const createUser = await db
-    .insertInto('user')
-    .values({
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        username: req.body.username,
-        email: req.body.email,
-        password: hash
-    })
-    .executeTakeFirst();
+    // const createUser = await db
+    // .insertInto('user')
+    // .values({
+    //     firstname: req.body.firstname,
+    //     lastname: req.body.lastname,
+    //     username: req.body.username,
+    //     email: req.body.email,
+    //     password: hash
+    // })
+    // .executeTakeFirst();
 
-    if(createUser){
-        console.log(`User Created: ${createUser}`)
+    const created =  createUser(req, hash)
+
+    if(created){
+        console.log(`User Created: ${created}`)
         res.status(200).send(`user created`)
     }
     } catch (error) {
@@ -209,7 +192,23 @@ const updateProfile = async(req,res)=>{
     } 
 }
 
-export {register, login, logoutUser, updateProfile}
+const me = async(req,res)=>{
+    try {
+        console.log(`ii: ${req.user}`)
+        const userInfo = await userAllInfo(req.user.id);
+        console.log(userInfo)
+        if(!userInfo) throw new Error(`User not found with Id: ${req.user.id}`);
+
+    res.status(200).json(userInfo);
+    } catch (error) {
+        res.status(404).send(`user not found: ${error.message}`)
+    }
+    
+}
+
+
+
+export {register, login, logoutUser, updateProfile, me}
 
  /* Register
     1. User click on sign-up
@@ -227,13 +226,17 @@ export {register, login, logoutUser, updateProfile}
 2. we will verify the username/email and password
 3. then if the user is available and password is correct then generate a access and refresh token
 4. save the refresh token in db
-5. send the access and refresh token through cookies
+5. send the access and refresh t
+ through cookies
 */
 
 /* updateProfile
-    1. here useR can update his/her profile info like: email, bio, username, first and last name 
-    2. then check for the updates made the user
+    1. here useR can update his/
+    profile info like: email, bio, username, first and last name 
+    2. then check for the update
+    de the user
     3. and make update in db 
-    4. return the changes and details with success message
+    4. return the changes and de
+    s with success message
 
 */
