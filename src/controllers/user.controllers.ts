@@ -5,107 +5,68 @@ import { generateAccessTokenAndRefreshToken } from "../services/auth.service.js"
 import { asyncHandler } from "../utils/asyncHandler.js";
 import userService from "../services/user.service.js"
 
-const register2 = async (req, res)=>{
-    try {
-        let userInput = req.body;
-    let {username, email, password} = req.body;
+// const register2 = async (req, res)=>{
+//     try {
+//         let userInput = req.body;
+//     let {username, email, password} = req.body;
 
-    if(!email && !username && !password){
-        throw new Error(`Required Info: email, username or password`)
-        // console.log(`Required Info: email, username or password`)
-    }
-// Add username check to
-    const userExists = await userQuery.findUserByEmailOrUsername(email, username);
+//     if(!email && !username && !password){
+//         throw new Error(`Required Info: email, username or password`)
+//         // console.log(`Required Info: email, username or password`)
+//     }
+//     // Add username check to
+//     const userExists = await userQuery.findUserByEmailOrUsername(email, username);
 
-    if(userExists){
-        console.log(userExists)
-        throw new Error(`User already exist with email: ${email}`)
-    }
+//     if(userExists){
+//         console.log(userExists)
+//         throw new Error(`User already exist with email: ${email}`)
+//     }
 
-    const hash = await bcrypt.hashPassword(req.body.password);
+//     const hash = await bcrypt.hashPassword(req.body.password);
 
-    const created =  await userQuery.createUser(req, hash)
+//     const created =  await userQuery.createUser(req, hash)
 
-    if(created){
-        console.log(`User Created: ${created}`)
-        res.status(200).send(`user created`)
-    }
-    } catch (error) {
-        console.log(`error: ${error}`)
-        res.status(500).send(`Error: ${error.message}`)
-    }
-}
+//     if(created){
+//         console.log(`User Created: ${created}`)
+//         res.status(200).send(`user created`)
+//     }
+//     } catch (error) {
+//         console.log(`error: ${error}`)
+//         res.status(500).send(`Error: ${error.message}`)
+//     }
+// }
 
 const register = asyncHandler(async(req,res)=>{
     const userInfo = req.body;
     
     const registerUser = await userService.register(userInfo);
-
-    console.log(registerUser)
+  
     if(!registerUser) throw new Error (`Error While registering User`)
 
-        res.status(201).send('User Registered Successfully')
+    res.status(201).send('User Registered Successfully')
 })
 
-const login = async (req, res)=>{
-    try {
+const login = asyncHandler(async (req, res)=>{
+    
     const {email, username, password} = req.body;
         
-    if(!((email || username) && password)){
-    throw new Error(`Email/username and password is required`)
-    };
+    const log = await userService.login({email, username, password});
 
-    const getUser = await db
-    .selectFrom('user')
-    .select(['id','password', 'username','email'])
-    .where((eb)=> 
-            eb('email','=',`${email}`).or('username','=',`${username}`))
-    .executeTakeFirst();
-    console.log(`getuser: ${getUser}`);
-
-    if(!getUser){
-        throw new Error(`User Does not exist with Username/email: ${username} ${email}`)
-    };
-
-    const checkPassword = await bcrypt.comparePassword(password, getUser.password);
-
-    console.log(checkPassword)
-    if(!checkPassword){
-        throw new Error(`Incorrect password`)
-    };
-
-    const data = {
-        id: getUser.id,
-        email: getUser.email,
-        username: getUser.username
-    }
-
-    const userId = {
-        id: getUser.id
-    }
     const options = {
-    httpOnly: true,
-    secure: true
-    }
+        httpOnly: true,
+        secure: true
+        }
 
-    if(checkPassword){
-        const {accessToken, refreshToken} = await generateAccessTokenAndRefreshToken(data, userId)
-        console.log(accessToken)
         res.status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
+        .cookie("accessToken", log.accessToken, options)
+        .cookie("refreshToken", log.refreshToken, options)
         .send('User Logged-in')
-    }
-    } catch (error) {
-        console.log(error)        
-        res.status(500).send(error.message)
-    }
-}
+    
+})
 
 
-const logoutUser = async(req,res)=>{
+const logoutUser = asyncHandler(async(req,res)=>{
     // Remove the session info from the db and cookies 
-    try {
         const {id} = req.user;
     console.log(req.user, req.body)
 
@@ -120,12 +81,8 @@ const logoutUser = async(req,res)=>{
     .clearCookie("accessToken")
     .clearCookie("refreshToken")
     .send("user logged out");
-
-    } catch (error) {
-        res.status(404).send(`Error while loggingout: ${error}`)
-    }
     
-}
+})
 interface User{
     username: string,
     email: string,
@@ -133,10 +90,9 @@ interface User{
     lastname: string,
     bio: string
 }
-const updateProfile = async(req,res)=>{
+const updateProfile = asyncHandler(async(req,res)=>{
     const {username, firstname, lastname, bio, email} = req.body;
     const {id} = req.user;
-    try {
         if(!(username || email || firstname || lastname || bio)){
         throw new Error(`Info is required`);
     }
@@ -175,23 +131,16 @@ const updateProfile = async(req,res)=>{
 
     res.status(201).send(updateUser)
 
-    } catch (error) {
-        res.status(400).send(error.message)    
-    } 
-}
+})
 
-const me = async(req,res)=>{
-    try {
+const me = asyncHandler(async(req,res)=>{
         const userInfo = await userQuery.userAllInfo(req.user.id);
         console.log(userInfo)
         if(!userInfo) throw new Error(`User not found with Id: ${req.user.id}`);
 
     res.status(200).json(userInfo);
-    } catch (error) {
-        res.status(404).send(`user not found: ${error.message}`)
-    }
-    
-}
+       
+})
 
 
 

@@ -50,6 +50,15 @@ const findUserByEmailOrUsername = async(email: string,username: string)=>{
     .executeTakeFirst(); 
 }
 
+ const getUserDetails = async(email,username)=>{
+    return await db
+        .selectFrom('user')
+        .select(['id','password','username','email'])
+        .where((eb)=> 
+                eb('email','=',`${email}`).or('username','=',`${username}`))
+        .executeTakeFirst();
+}
+
 const removeToken = async(id:number)=>{
 return await db
     .updateTable('user')
@@ -74,5 +83,6 @@ export default
     findUserByEmailOrUsername, 
     removeToken, 
     updateUserInfo,
-    findUserById
+    findUserById,
+    getUserDetails
 }
