@@ -1,10 +1,13 @@
 import { db } from "../db/index.db.js";
-import {hashPassword, comparePassword} from '../utils/bcrypt.js'
-import {userAllInfo, createUser} from "../db/queries/user.query.js"
+import bcrypt from '../utils/bcrypt.js'
+import userQuery from "../db/queries/user.query.js"
 import { generateAccessTokenAndRefreshToken } from "../services/auth.service.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import userService from "../services/user.service.js"
 
-const register = async (req, res)=>{
+const register2 = async (req, res)=>{
     try {
+        let userInput = req.body;
     let {username, email, password} = req.body;
 
     if(!email && !username && !password){
@@ -12,31 +15,16 @@ const register = async (req, res)=>{
         // console.log(`Required Info: email, username or password`)
     }
 // Add username check to
-    const ifExists = await db
-    .selectFrom('user')
-    .select('id')
-    .where('email', '=',email)
-    .executeTakeFirst(); 
+    const userExists = await userQuery.findUserByEmailOrUsername(email, username);
 
-    if(ifExists){
-        console.log(ifExists)
+    if(userExists){
+        console.log(userExists)
         throw new Error(`User already exist with email: ${email}`)
-        // console.log(`User already exist with email: ${email}`)
     }
 
-    const hash = await hashPassword(req.body.password);
-    // const createUser = await db
-    // .insertInto('user')
-    // .values({
-    //     firstname: req.body.firstname,
-    //     lastname: req.body.lastname,
-    //     username: req.body.username,
-    //     email: req.body.email,
-    //     password: hash
-    // })
-    // .executeTakeFirst();
+    const hash = await bcrypt.hashPassword(req.body.password);
 
-    const created =  createUser(req, hash)
+    const created =  await userQuery.createUser(req, hash)
 
     if(created){
         console.log(`User Created: ${created}`)
@@ -48,6 +36,16 @@ const register = async (req, res)=>{
     }
 }
 
+const register = asyncHandler(async(req,res)=>{
+    const userInfo = req.body;
+    
+    const registerUser = await userService.register(userInfo);
+
+    console.log(registerUser)
+    if(!registerUser) throw new Error (`Error While registering User`)
+
+        res.status(201).send('User Registered Successfully')
+})
 
 const login = async (req, res)=>{
     try {
@@ -69,13 +67,7 @@ const login = async (req, res)=>{
         throw new Error(`User Does not exist with Username/email: ${username} ${email}`)
     };
 
-    // const checkPassword = await db
-    // .selectFrom('user')
-    // .select('id')
-    // .where('password','=',password)
-    // .executeTakeFirst();
-
-    const checkPassword = await comparePassword(password, getUser.password);
+    const checkPassword = await bcrypt.comparePassword(password, getUser.password);
 
     console.log(checkPassword)
     if(!checkPassword){
@@ -113,16 +105,11 @@ const login = async (req, res)=>{
 
 const logoutUser = async(req,res)=>{
     // Remove the session info from the db and cookies 
-    const {id} = req.user;
+    try {
+        const {id} = req.user;
     console.log(req.user, req.body)
 
-    const removeToken = await db
-    .updateTable('user')
-    .set({
-        refreshtoken: ''
-    })
-    .where('id','=', id)
-    .executeTakeFirst();
+    const remove = await userQuery.removeToken(id);
 
     const options = {
         httpOnly: true,
@@ -132,7 +119,12 @@ const logoutUser = async(req,res)=>{
     res.status(200)
     .clearCookie("accessToken")
     .clearCookie("refreshToken")
-    .send("user logged out")
+    .send("user logged out");
+
+    } catch (error) {
+        res.status(404).send(`Error while loggingout: ${error}`)
+    }
+    
 }
 interface User{
     username: string,
@@ -177,11 +169,7 @@ const updateProfile = async(req,res)=>{
     if(lastname) updates.lastname = lastname;
     if(bio) updates.bio = bio;
 
-    const updateUser = await db
-    .updateTable('user')
-    .set(updates)
-    .where('id','=',id)
-    .executeTakeFirst();
+    const updateUser = await userQuery.updateUserInfo(updates,id);
 
     if(!updateUser) throw new Error(`Error while updating userr profile`);
 
@@ -194,8 +182,7 @@ const updateProfile = async(req,res)=>{
 
 const me = async(req,res)=>{
     try {
-        console.log(`ii: ${req.user}`)
-        const userInfo = await userAllInfo(req.user.id);
+        const userInfo = await userQuery.userAllInfo(req.user.id);
         console.log(userInfo)
         if(!userInfo) throw new Error(`User not found with Id: ${req.user.id}`);
 
