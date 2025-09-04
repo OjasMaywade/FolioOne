@@ -7,11 +7,11 @@ const register = async(userInput)=>{
 
     if(!(username && password && email)) throw new Error(`Required Info: email, username, password`)
 
-    const userExist = await userQuery.findUserByEmailOrUsername(userInput.email,userInput.username);
+    const userExist = await userQuery.findUserByEmailOrUsername(email, username);
     
     if(userExist) throw new Error(`user already exist with provided email/username`);
 
-    const hash = await bcrypt.hashPassword(userInput.password);
+    const hash = await bcrypt.hashPassword(password);
 
     const createUser = await userQuery.createUser(userInput, hash);
 
