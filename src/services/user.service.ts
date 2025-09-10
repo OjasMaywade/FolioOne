@@ -1,6 +1,7 @@
 import bcrypt from "../utils/bcrypt.js";
 import userQuery from "../db/queries/user.query.js";
 import { generateAccessTokenAndRefreshToken } from "./auth.service.js";
+import { generateAccessToken, verifyRefreshToken } from "../utils/jwt.js";
 
 const register = async(userInput)=>{
     const {email, username, password } = userInput;
@@ -53,4 +54,102 @@ const login = async({email, username, password})=>{
         return {accessToken, refreshToken};
 }
 
-export default {register, login}
+const logoutUser = async(id)=>{
+    const findById = await userQuery.findUserById(id);
+
+    if(!findById) throw new Error(`User not available`);
+
+    const remove = await userQuery.removeToken(id);
+
+    if(!findById) throw new Error(`Error while logging Out`);
+
+    return remove;
+}
+interface User{
+    username: string,
+    email: string,
+    firstname: string,
+    lastname: string,
+    bio: string
+}
+
+const updateProfile = async({username, firstname, lastname, bio, email, id})=>{
+    if(!(username || email || firstname || lastname || bio)){
+            throw new Error(`Info is required`);
+        }
+        let updates = {} as User;
+        const getUser = await userQuery.findUserById(id);
+        // await db
+        // .selectFrom('user')
+        // .select(['email','firstname','lastname','username'])
+        // .where('id','=',id)
+        // .executeTakeFirst();
+    
+        // const checkAndUpdateDetails = async(field, input, id, updates)=>{
+            if(username){
+            const check = await userQuery.findUserByEmailOrUsername(username,email)
+            // await db
+            // .selectFrom('user')
+            // .select('id')
+            // .where('username','=',username)
+            // .executeTakeFirst();
+            if(check && check.id != id) throw new Error(`Username is already in use by another user`);
+            else updates.username = username;
+        }
+
+        // await checkAndUpdateDetails("username", username, id, updates)
+        
+        if(email){
+            const check = await userQuery.findUserByEmailOrUsername(username,email)
+            // db
+            // .selectFrom('user')
+            // .select(['email','id'])
+            // .where('email','=',email)
+            // .executeTakeFirst();
+            if(check && check.id !=id) throw new Error(`email is already in use`)
+                else updates.email = email;
+        }
+        if(firstname) updates.firstname = firstname;
+        if(lastname) updates.lastname = lastname;
+        if(bio) updates.bio = bio;
+    
+        const updateUser = await userQuery.updateUserInfo(updates,id);
+    
+        if(!updateUser) throw new Error(`Error while updating userr profile`);
+
+        return updateUser;
+}
+
+const deleteUser = async(id)=>{
+    if(!id) throw new Error('User ID not found');
+
+    const deleteUser = await userQuery.deleteUser(id);
+
+    if(!deleteUser) throw new Error (`Error while deleting user from DB`);
+
+    return deleteUser
+}
+
+const refreshAccessToken = async(oRefreshToken)=>{
+    const verified = await verifyRefreshToken(oRefreshToken);
+
+    const getUser = await userQuery.findUserById(verified.id);
+
+    // check if refreshtoken provided matches with the db refreshtoken
+    
+    if(!verified) throw new Error(`Refresh Token expired, please login again`);
+
+    const data = {
+            id: getUser.id,
+            email: getUser.email,
+            username: getUser.username
+        }
+
+        const userId = {
+            id: getUser.id
+        }
+
+    return await generateAccessTokenAndRefreshToken(data, userId);
+}
+
+export default {register, login, logoutUser, updateProfile, deleteUser, refreshAccessToken}

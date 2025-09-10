@@ -26,7 +26,7 @@ const  verifyAccessToken = async (token)=>{
 
 const verifyRefreshToken = async (token)=>{
     try {
-        return await jwt.verify(token, process.env.REFRESH_TOKEN_SECRET)
+        return await jwt.verify(token, process.env.REFRESH_TOKEN_SECRET) as JwtPayload
     } catch (error) {
         throw new Error(`Error while verifing refresh token: ${error}`)
     }

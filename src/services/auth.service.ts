@@ -6,7 +6,11 @@ const generateAccessTokenAndRefreshToken = async (userData, userId)=>{
     let accessToken = await generateAccessToken(userData);
     let refreshToken = await generateRefreshToken(userId);
 
-    userQuery.insertRefreshToken(refreshToken, userId);
+    const insertRefreshToken = await userQuery.insertRefreshToken(refreshToken, userId.id);
+
+    if(!insertRefreshToken) throw new Error(`Error while inserting Refresh Token`)
+
+        console.log(insertRefreshToken);
 
     return {accessToken, refreshToken}
 }

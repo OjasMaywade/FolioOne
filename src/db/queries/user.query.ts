@@ -36,7 +36,7 @@ const createUser = async(userInput, hash)=>{
         email: userInput.email,
         password: hash
     })
-    .returning('id')
+    .returning(['id'])
     .executeTakeFirst();
 }
 
@@ -76,13 +76,22 @@ return await db
     .where('id','=',id)
     .executeTakeFirst();
 }
+
+const deleteUser = async(id)=>{
+    return await db
+    .deleteFrom('user')
+    .where('id','=',id)
+    .executeTakeFirst()
+}
+
 export default 
 {   userAllInfo, 
-    insertRefreshToken, 
+    insertRefreshToken,
     createUser, 
     findUserByEmailOrUsername, 
     removeToken, 
     updateUserInfo,
     findUserById,
-    getUserDetails
+    getUserDetails,
+    deleteUser
 }

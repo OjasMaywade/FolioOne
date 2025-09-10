@@ -1,40 +1,6 @@
-import { db } from "../db/index.db.js";
-import bcrypt from '../utils/bcrypt.js'
 import userQuery from "../db/queries/user.query.js"
-import { generateAccessTokenAndRefreshToken } from "../services/auth.service.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import userService from "../services/user.service.js"
-
-// const register2 = async (req, res)=>{
-//     try {
-//         let userInput = req.body;
-//     let {username, email, password} = req.body;
-
-//     if(!email && !username && !password){
-//         throw new Error(`Required Info: email, username or password`)
-//         // console.log(`Required Info: email, username or password`)
-//     }
-//     // Add username check to
-//     const userExists = await userQuery.findUserByEmailOrUsername(email, username);
-
-//     if(userExists){
-//         console.log(userExists)
-//         throw new Error(`User already exist with email: ${email}`)
-//     }
-
-//     const hash = await bcrypt.hashPassword(req.body.password);
-
-//     const created =  await userQuery.createUser(req, hash)
-
-//     if(created){
-//         console.log(`User Created: ${created}`)
-//         res.status(200).send(`user created`)
-//     }
-//     } catch (error) {
-//         console.log(`error: ${error}`)
-//         res.status(500).send(`Error: ${error.message}`)
-//     }
-// }
+import userService from "../services/user.service.js";
 
 const register = asyncHandler(async(req,res)=>{
     const userInfo = req.body;
@@ -61,16 +27,13 @@ const login = asyncHandler(async (req, res)=>{
         .cookie("accessToken", log.accessToken, options)
         .cookie("refreshToken", log.refreshToken, options)
         .send('User Logged-in')
-    
 })
 
 
 const logoutUser = asyncHandler(async(req,res)=>{
-    // Remove the session info from the db and cookies 
-        const {id} = req.user;
-    console.log(req.user, req.body)
+    const {id} = req.user;
 
-    const remove = await userQuery.removeToken(id);
+    const remove = await userService.logoutUser(id);
 
     const options = {
         httpOnly: true,
@@ -78,8 +41,8 @@ const logoutUser = asyncHandler(async(req,res)=>{
     }
 
     res.status(200)
-    .clearCookie("accessToken")
-    .clearCookie("refreshToken")
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
     .send("user logged out");
     
 })
@@ -93,41 +56,8 @@ interface User{
 const updateProfile = asyncHandler(async(req,res)=>{
     const {username, firstname, lastname, bio, email} = req.body;
     const {id} = req.user;
-        if(!(username || email || firstname || lastname || bio)){
-        throw new Error(`Info is required`);
-    }
-    let updates = {} as User;
-    const getUser = await db
-    .selectFrom('user')
-    .select(['email','firstname','lastname','username'])
-    .where('id','=',id)
-    .executeTakeFirst();
 
-    if(username){
-        const check = await db
-        .selectFrom('user')
-        .select(['username','id'])
-        .where('username','=',username)
-        .executeTakeFirst();
-        if(check && check.id != id) throw new Error(`Username is already in use by another user`);
-        else updates.username = username;
-    }
-    if(email){
-        const check = await db
-        .selectFrom('user')
-        .select(['email','id'])
-        .where('email','=',email)
-        .executeTakeFirst();
-        if(check && check.id !=id) throw new Error(`email is already in use`)
-            else updates.email = email;
-    }
-    if(firstname) updates.firstname = firstname;
-    if(lastname) updates.lastname = lastname;
-    if(bio) updates.bio = bio;
-
-    const updateUser = await userQuery.updateUserInfo(updates,id);
-
-    if(!updateUser) throw new Error(`Error while updating userr profile`);
+    const updateUser = await userService.updateProfile({username, firstname, lastname, bio, email, id})
 
     res.status(201).send(updateUser)
 
@@ -135,16 +65,51 @@ const updateProfile = asyncHandler(async(req,res)=>{
 
 const me = asyncHandler(async(req,res)=>{
         const userInfo = await userQuery.userAllInfo(req.user.id);
-        console.log(userInfo)
+        
         if(!userInfo) throw new Error(`User not found with Id: ${req.user.id}`);
 
-    res.status(200).json(userInfo);
-       
+    res.status(200).json(userInfo);     
+})
+
+const deleteUser = asyncHandler(async(req, res)=>{
+    const {id} = req.user;
+
+    const deleteUser = await userService.deleteUser(id);
+
+    if(!deleteUser) throw new Error(`error faced when deleting User, Try Again`);
+
+    res.status(200).send(`user Deleted successfully`);
+})
+
+const refreshAccessToken = asyncHandler(async(req,res)=>{
+    const {refreshToken} = req.cookies;
+    console.log(refreshToken)
+
+    const token = await userService.refreshAccessToken(refreshToken);
+    
+    const options = {
+        httpOnly: true,
+        secure: true
+        }
+
+    res
+    .status(200)
+    .cookie("accessToken",token.accessToken, options)
+    .cookie("refreshToken", token.refreshToken, options)
+    .send('Access token generated successfully')
 })
 
 
-
-export {register, login, logoutUser, updateProfile, me}
+export default
+{ 
+    register, 
+    login, 
+    logoutUser, 
+    updateProfile, 
+    me, 
+    deleteUser,
+    refreshAccessToken
+}
 
  /* Register
     1. User click on sign-up
