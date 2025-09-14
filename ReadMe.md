@@ -7,3 +7,15 @@ https://developer.spotify.com/documentation/web-api/reference/get-users-top-arti
 https://developer.spotify.com/documentation/web-api/reference/get-information-about-the-users-current-playback
 https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback
 https://developer.spotify.com/documentation/web-api/reference/pause-a-users-playback
+
+
+
+
+1. Controller - 
+2. db - 
+3. middlewares - 
+4. repositories - 
+5. routes - 
+6. services - 
+7. types - 
+8. utils - 

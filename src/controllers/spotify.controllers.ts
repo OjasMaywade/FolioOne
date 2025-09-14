@@ -1,5 +1,5 @@
 import axios from "axios";
-import { access_token } from "./spotify.oauth.js";
+import { access_token } from "./oauth.controller.js";
 // let access_token = '';
 
 const topTenTracks = async(req,res)=>{

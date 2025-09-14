@@ -1,9 +1,9 @@
 import { Router } from "express";
-import {redirectFunction, callback} from "../controllers/spotify.oauth.js"
+import {redirectFunction, callback} from "../controllers/oauth.controller.js"
 
 const router = Router();
 
-router.route('/spotify').get(redirectFunction);
-router.route('/spotify/callback').get(callback);
+router.route('/:provider').get(redirectFunction);
+router.route('/:provider/callback').get(callback);
 
 export default router;

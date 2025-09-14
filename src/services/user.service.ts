@@ -1,6 +1,6 @@
 import bcrypt from "../utils/bcrypt.js";
 import userQuery from "../db/queries/user.query.js";
-import { generateAccessTokenAndRefreshToken } from "./auth.service.js";
+import authService from "./auth.service.js";
 import { generateAccessToken, verifyRefreshToken } from "../utils/jwt.js";
 
 const register = async(userInput)=>{
@@ -49,7 +49,7 @@ const login = async({email, username, password})=>{
             id: getUser.id
         }
         
-        const {accessToken, refreshToken} = await generateAccessTokenAndRefreshToken(data, userId);
+        const {accessToken, refreshToken} = await authService.generateAccessTokenAndRefreshToken(data, userId);
 
         return {accessToken, refreshToken};
 }
@@ -149,7 +149,7 @@ const refreshAccessToken = async(oRefreshToken)=>{
             id: getUser.id
         }
 
-    return await generateAccessTokenAndRefreshToken(data, userId);
+    return await authService.generateAccessTokenAndRefreshToken(data, userId);
 }
 
 export default {register, login, logoutUser, updateProfile, deleteUser, refreshAccessToken}
