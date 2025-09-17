@@ -1,4 +1,3 @@
-import axios from "axios";
 import userService from "../services/user.service.js";
 import authService from "../services/auth.service.js"
 import { asyncHandler } from "../utils/asyncHandler.js";

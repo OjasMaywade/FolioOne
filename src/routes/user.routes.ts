@@ -15,7 +15,7 @@ router.route('/logoutUser').patch(auth, userController.logoutUser);
 
 router.route('/refreshAccessToken').post(userController.refreshAccessToken);
 
-router.route('/resetPassword').post();
+router.route('/resetPassword').post(auth, userController.resetPassword);
 
 router.route('/me').get(auth, userController.me);
 

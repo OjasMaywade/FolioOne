@@ -1,3 +1,4 @@
+import { id } from "zod/v4/locales";
 import { db } from "../index.db.js";
 
 const userAllInfo = async (id: number)=>{
@@ -59,6 +60,14 @@ const findUserByEmailOrUsername = async(email: string,username: string)=>{
         .executeTakeFirst();
 }
 
+const getUserPassword = async(id)=>{
+    return await db
+        .selectFrom('user')
+        .select('password')
+        .where("id","=", id)
+        .executeTakeFirst();
+}
+
 const removeToken = async(id:number)=>{
 return await db
     .updateTable('user')
@@ -84,6 +93,17 @@ const deleteUser = async(id)=>{
     .executeTakeFirst()
 }
 
+const resetPassword = async(newPasswordHashed,id)=>{
+    return await db
+    .updateTable('user')
+    .set({
+        password: newPasswordHashed,
+        refreshtoken: ''
+    })
+    .where("id","=",id)
+    .executeTakeFirst();
+}
+
 export default 
 {   userAllInfo, 
     insertRefreshToken,
@@ -93,5 +113,7 @@ export default
     updateUserInfo,
     findUserById,
     getUserDetails,
-    deleteUser
+    deleteUser,
+    getUserPassword,
+    resetPassword
 }

@@ -2,9 +2,9 @@ User
 1. POST /api/users/register - dONE
 2. POST /api/users/login - dONE
 3. PATCH /api/users/updateProfile - dONE (iMPROVEMENT nEEDED)
-4. DELETE /api/users/deleteUser 
+4. DELETE /api/users/deleteUser - Done
 5. PATCH /api/users/logoutUser - dONE
-6. POST /api/users/refreshAccessToken
+6. POST /api/users/refreshAccessToken - Done
 7. POST /api/users/resetPassword
 8. GET /api/users/getCurrentUser
 9. PATCH /api/users/updateProfilePic

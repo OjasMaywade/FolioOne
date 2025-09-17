@@ -79,20 +79,10 @@ const updateProfile = async({username, firstname, lastname, bio, email, id})=>{
         }
         let updates = {} as User;
         const getUser = await userQuery.findUserById(id);
-        // await db
-        // .selectFrom('user')
-        // .select(['email','firstname','lastname','username'])
-        // .where('id','=',id)
-        // .executeTakeFirst();
     
         // const checkAndUpdateDetails = async(field, input, id, updates)=>{
             if(username){
             const check = await userQuery.findUserByEmailOrUsername(username,email)
-            // await db
-            // .selectFrom('user')
-            // .select('id')
-            // .where('username','=',username)
-            // .executeTakeFirst();
             if(check && check.id != id) throw new Error(`Username is already in use by another user`);
             else updates.username = username;
         }
@@ -101,11 +91,6 @@ const updateProfile = async({username, firstname, lastname, bio, email, id})=>{
         
         if(email){
             const check = await userQuery.findUserByEmailOrUsername(username,email)
-            // db
-            // .selectFrom('user')
-            // .select(['email','id'])
-            // .where('email','=',email)
-            // .executeTakeFirst();
             if(check && check.id !=id) throw new Error(`email is already in use`)
                 else updates.email = email;
         }
@@ -152,4 +137,39 @@ const refreshAccessToken = async(oRefreshToken)=>{
     return await authService.generateAccessTokenAndRefreshToken(data, userId);
 }
 
-export default {register, login, logoutUser, updateProfile, deleteUser, refreshAccessToken}
+const resetPassword = async(oldPassword, newPassword, id)=>{
+    if(!id) throw new Error (`Internal Error, Authenticated User ID not returned`);
+
+    if(!(oldPassword && newPassword)) throw new Error (`Please provide both the new and old password`);
+
+    const getPassword = await userQuery.getUserPassword(id);
+
+    if(!getPassword) throw new Error (`Can't find password for user with ID:${id}`)
+
+    const comparePass = await bcrypt.comparePassword(oldPassword, getPassword.password);
+
+    if(!comparePass) throw new Error(`Incorrect password, Please provide the correct password`);
+
+    if(oldPassword == newPassword) throw new Error (`old password matches with new password`);
+
+    const newPasswordHashed = await bcrypt.hashPassword(newPassword);
+
+    const setPassword = await userQuery.resetPassword(newPasswordHashed, id);
+
+    if(!setPassword) throw new Error (`Internal Error while saving the password: ${setPassword}`)
+    
+    return setPassword;
+
+}
+
+
+export default 
+{
+    register, 
+    login, 
+    logoutUser, 
+    updateProfile, 
+    deleteUser, 
+    refreshAccessToken,
+    resetPassword
+}

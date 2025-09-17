@@ -99,6 +99,28 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
     .send('Access token generated successfully')
 })
 
+// Reset Password Controller
+
+const resetPassword = asyncHandler(async(req, res)=>{
+    const {oldPassword, newPassword} = req.body;
+    const {id} = req.user;
+
+    const reset = await userService.resetPassword(oldPassword, newPassword, id)
+
+    if(!reset) throw new Error (`Error while resetting Password`);
+
+    // create a common options as it is getting repeated
+    const options = {
+        httpOnly: true,
+        secure: true
+        }
+
+    res.status(200)
+    .clearCookie("accessToken",options)
+    .clearCookie("refreshToken", options)
+    .send(`Password reset successfully, please login again with new password`);
+
+})
 
 export default
 { 
@@ -108,7 +130,8 @@ export default
     updateProfile, 
     me, 
     deleteUser,
-    refreshAccessToken
+    refreshAccessToken,
+    resetPassword
 }
 
  /* Register
