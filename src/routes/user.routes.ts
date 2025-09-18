@@ -1,6 +1,7 @@
 import { Router } from "express";
 import userController from "../controllers/user.controllers.js";
 import { auth } from "../middlewares/auth.middleware.js";
+import { upload } from "../middlewares/multer.middleware.js";
 const router = Router();
 
 router.route('/register').post(userController.register);
@@ -19,7 +20,7 @@ router.route('/resetPassword').post(auth, userController.resetPassword);
 
 router.route('/me').get(auth, userController.me);
 
-router.route('/updateProfilePic').patch();
+router.route('/updateProfilePic').patch(auth, upload.single('profilepic'), userController.updateProfilePic);
 
 router.route('/verifyEmail').post();
 

@@ -122,6 +122,11 @@ const resetPassword = asyncHandler(async(req, res)=>{
 
 })
 
+const updateProfilePic = asyncHandler(async(req, res)=>{
+    console.log(`controller log: ${req.user}`);
+    res.send(`yo!`)
+})
+
 export default
 { 
     register, 
@@ -131,7 +136,8 @@ export default
     me, 
     deleteUser,
     refreshAccessToken,
-    resetPassword
+    resetPassword,
+    updateProfilePic
 }
 
  /* Register

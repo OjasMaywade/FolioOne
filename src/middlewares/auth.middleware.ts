@@ -1,29 +1,30 @@
-import { db } from "../db/index.db.js";
+import userQuery from "../db/queries/user.query.js";
 import { verifyAccessToken } from "../utils/jwt.js";
 
-const auth = async(req,_,next)=>{
+const auth = async(req,res,next)=>{
     try {
-        // console.log(req.cookies)
-        const {accessToken} = req.cookies;
+        const accessToken = req.cookies?.accessToken;
+
+        if(!accessToken) throw new Error(`Token unavailable`)
 
         const verify = await verifyAccessToken(accessToken);
 
-        // console.log(verify, accessToken)
         if(!verify){
         throw new Error(`Invalid Access Token, Please login again or use refreshtoken to get new access token: ${Error}`)
         }
 
-        const getUser = await db
+        const getUser = await userQuery.findUserById(verify.id);
+        /*db
         .selectFrom('user')
         .select(['id','username','email'])
         .where('email', '=', verify.email)
-        .executeTakeFirst();
+        .executeTakeFirst();*/
 
         if(!getUser) throw new Error(`Use does not exist with email: ${verify.email}`)
-        if(getUser){
-            req.user = getUser
+        
+            res.locals.user = getUser;
             next();
-        }
+        
     } catch (error) {
         console.log(error)
         throw new Error(`Authentication Faied: ${error.message}`)
