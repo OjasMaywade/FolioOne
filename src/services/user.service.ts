@@ -2,6 +2,8 @@ import bcrypt from "../utils/bcrypt.js";
 import userQuery from "../db/queries/user.query.js";
 import authService from "./auth.service.js";
 import { generateAccessToken, verifyRefreshToken } from "../utils/jwt.js";
+import awsS3 from "../utils/awsS3.js";
+import fs from "fs";
 
 const register = async(userInput)=>{
     const {email, username, password } = userInput;
@@ -142,6 +144,8 @@ const resetPassword = async(oldPassword, newPassword, id)=>{
 
     if(!(oldPassword && newPassword)) throw new Error (`Please provide both the new and old password`);
 
+    // remove empty space from the input and then check
+
     const getPassword = await userQuery.getUserPassword(id);
 
     if(!getPassword) throw new Error (`Can't find password for user with ID:${id}`)
@@ -162,6 +166,36 @@ const resetPassword = async(oldPassword, newPassword, id)=>{
 
 }
 
+const uploadProfilePic = async (path, filename, id)=>{
+
+    if(!(path && filename)) throw new Error (`path and filename is required, error while upload`);
+
+    const data = fs.readFileSync(path);
+
+    const uploadToS3 = await awsS3.uploadFile(data, filename);
+
+    if(!uploadToS3) throw new Error (`Error in Uplaoding :${uploadToS3}`)
+    
+    const url = await userQuery.getProfilePicUrl(id);
+
+
+    //const deleteObjectS3 = await awsS3.deleteFile(key);
+
+    const deleteFile = fs.unlink(path, (err)=>{
+        if(err) throw new Error(`Error while deleting file from Server : ${err.message}`);
+        console.log(`${path} was deleted`);
+    });
+
+    console.log(uploadToS3)
+
+    const getUrl = await awsS3.getObjectUrl(filename)
+    console.log(getUrl)
+    const addUrlToDb = await userQuery.setUserProfilePic(getUrl, id)
+
+    if(!addUrlToDb) throw new Error (`Error while adding url to db`);
+
+    return addUrlToDb;
+}
 
 export default 
 {
@@ -171,5 +205,6 @@ export default
     updateProfile, 
     deleteUser, 
     refreshAccessToken,
-    resetPassword
+    resetPassword,
+    uploadProfilePic
 }

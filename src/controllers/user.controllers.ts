@@ -123,8 +123,12 @@ const resetPassword = asyncHandler(async(req, res)=>{
 })
 
 const updateProfilePic = asyncHandler(async(req, res)=>{
-    console.log(`controller log: ${req.user}`);
-    res.send(`yo!`)
+    const {path, filename} = req.file;
+    const {id} = req.res.locals.user;
+
+    const uploadProfilePicS3 = await userService.uploadProfilePic(path, filename, id);
+
+    res.status(200).send(`Profile photo uploaded successfully: ${uploadProfilePicS3}`)
 })
 
 export default

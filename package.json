@@ -34,6 +34,9 @@
     "testTimeout": 10000
   },
   "dependencies": {
+    "@aws-sdk/client-ec2": "^3.892.0",
+    "@aws-sdk/client-s3": "^3.892.0",
+    "@aws-sdk/s3-request-presigner": "^3.893.0",
     "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.2.0",

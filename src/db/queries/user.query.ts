@@ -104,6 +104,24 @@ const resetPassword = async(newPasswordHashed,id)=>{
     .executeTakeFirst();
 }
 
+const setUserProfilePic = async(profilePicUrl, id)=>{
+    return await db
+    .updateTable('user')
+    .set({
+        profilepic: profilePicUrl
+    })
+    .where("id","=",id)
+    .executeTakeFirst();
+}
+
+const getProfilePicUrl = async(id)=>{
+    return await db
+    .selectFrom('user')
+    .select('profilepic')
+    .where("id","=",id)
+    .executeTakeFirst();
+}
+
 export default 
 {   userAllInfo, 
     insertRefreshToken,
@@ -115,5 +133,7 @@ export default
     getUserDetails,
     deleteUser,
     getUserPassword,
-    resetPassword
+    resetPassword,
+    setUserProfilePic,
+    getProfilePicUrl
 }
