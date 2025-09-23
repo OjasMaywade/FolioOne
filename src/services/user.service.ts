@@ -178,7 +178,13 @@ const uploadProfilePic = async (path, filename, id)=>{
     
     const url = await userQuery.getProfilePicUrl(id);
 
+    if(url.image_key){
+        const deleteObjectS3 = await awsS3.deleteFile(url.image_key);
 
+        if(!deleteObjectS3) throw new Error(`Issue while deleting old image from S3: ${deleteObjectS3}`);
+        console.log(deleteObjectS3)
+        console.log(`Image deleted: ${deleteObjectS3}`);
+    }
     //const deleteObjectS3 = await awsS3.deleteFile(key);
 
     const deleteFile = fs.unlink(path, (err)=>{
@@ -188,9 +194,10 @@ const uploadProfilePic = async (path, filename, id)=>{
 
     console.log(uploadToS3)
 
-    const getUrl = await awsS3.getObjectUrl(filename)
-    console.log(getUrl)
-    const addUrlToDb = await userQuery.setUserProfilePic(getUrl, id)
+    // const getUrl = await awsS3.getObjectUrl(filename);
+    // console.log(`url: ${getUrl}`)
+    const profilePicUrl = process.env.URL + filename; 
+    const addUrlToDb = await userQuery.setUserProfilePic(profilePicUrl, id, filename)
 
     if(!addUrlToDb) throw new Error (`Error while adding url to db`);
 

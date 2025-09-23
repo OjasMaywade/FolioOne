@@ -81,6 +81,7 @@ export interface User {
   email: string;
   firstname: string;
   id: Generated<number>;
+  image_key: string | null;
   lastname: string;
   password: string;
   profilepic: string | null;

@@ -14,7 +14,7 @@ const uploadFile = async (data, filename)=>{
   
     const command = new PutObjectCommand({
             Body: data,
-            Bucket: "bucket.portfolio-app",
+            Bucket: "bucket.portfolio-app-public",
             Key: filename,
             ContentType: "image/jpg"
         });
@@ -25,7 +25,7 @@ const uploadFile = async (data, filename)=>{
 
 const deleteFile = async (key)=>{
     const command = new DeleteObjectCommand({
-        Bucket: "bucket.portfolio-app",
+        Bucket: "bucket.portfolio-app-public",
         Key: key
     });
     return await s3Client.send(command)

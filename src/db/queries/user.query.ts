@@ -104,11 +104,12 @@ const resetPassword = async(newPasswordHashed,id)=>{
     .executeTakeFirst();
 }
 
-const setUserProfilePic = async(profilePicUrl, id)=>{
+const setUserProfilePic = async(profilePicUrl, id, filename)=>{
     return await db
     .updateTable('user')
     .set({
-        profilepic: profilePicUrl
+        profilepic: profilePicUrl,
+        image_key: filename
     })
     .where("id","=",id)
     .executeTakeFirst();
@@ -117,7 +118,7 @@ const setUserProfilePic = async(profilePicUrl, id)=>{
 const getProfilePicUrl = async(id)=>{
     return await db
     .selectFrom('user')
-    .select('profilepic')
+    .select(['profilepic', 'image_key'])
     .where("id","=",id)
     .executeTakeFirst();
 }
