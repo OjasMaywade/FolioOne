@@ -14,15 +14,11 @@ const auth = async(req,res,next)=>{
         }
 
         const getUser = await userQuery.findUserById(verify.id);
-        /*db
-        .selectFrom('user')
-        .select(['id','username','email'])
-        .where('email', '=', verify.email)
-        .executeTakeFirst();*/
 
         if(!getUser) throw new Error(`Use does not exist with email: ${verify.email}`)
         
             res.locals.user = getUser;
+            req.user = getUser;
             next();
         
     } catch (error) {

@@ -10,14 +10,14 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   : ColumnType<T, T | undefined, T>;
 
 export interface Blog {
-  blogger: number;
+  author_id: number;
   content: string;
   created_at: Generated<Date | null>;
   id: Generated<number>;
   private: number;
+  status: "draft" | "published";
   title: string;
   updated_at: Generated<Date | null>;
-  visitors: Generated<number>;
 }
 
 export interface Bookmark {

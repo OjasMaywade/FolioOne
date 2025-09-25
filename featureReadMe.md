@@ -5,13 +5,14 @@ User
 4. DELETE /api/users/deleteUser - Done
 5. PATCH /api/users/logoutUser - dONE
 6. POST /api/users/refreshAccessToken - Done
-7. POST /api/users/resetPassword
-8. GET /api/users/getCurrentUser
-9. PATCH /api/users/updateProfilePic
-10. POST /api/users/verify-email
-11. POST /api/users/forgot-password
+7. POST /api/users/resetPassword - Done
+8. GET /api/users/getCurrentUser - is /me - done
+9. PATCH /api/users/updateProfilePic -Done
+10. POST /api/users/verify-email![alt text](image.png)  - while go with otp based varification, AWS SES, AWS SDK
+11. POST /api/users/forgot-password - https://gitlab.com/users/password/edit?reset_password_token=h96DcoxQaxoSNZAmNQAX, Link based forgot password
 12. GET /api/users/bookmarks
 13. GET /api/users/activity
+14. GET /api/users/search?q=...... search user by username, name, id
 
 Blog
 1. POST /api/blogs
