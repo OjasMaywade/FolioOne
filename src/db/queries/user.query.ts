@@ -37,7 +37,7 @@ const createUser = async(userInput, hash)=>{
         email: userInput.email,
         password: hash
     })
-    .returning(['id'])
+    // .returning(['id'])
     .executeTakeFirst();
 }
 

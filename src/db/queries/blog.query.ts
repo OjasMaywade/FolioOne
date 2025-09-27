@@ -1,16 +1,12 @@
 import { db } from "../index.db.js";
 
-const createBlog = async(title, content, status, private_blog, id)=>{
+const createBlog = async(id)=>{
     return await db
     .insertInto('blog')
     .values({
-        title: title,
-        content: content,
-        status: status,
-        private: private_blog,
         author_id: id
     })
-    .returning('id')
+    // .returning(['id'])
     .executeTakeFirst();
 }
 

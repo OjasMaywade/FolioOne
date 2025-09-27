@@ -15,7 +15,11 @@ User
 14. GET /api/users/search?q=...... search user by username, name, id
 
 Blog
-1. POST /api/blogs
+1. POST /api/blogs ![alt text](image-1.png) - image upload in medium and also it have auto save feature
+the UI have a add button the image get uploaded to db and then added to UI (blog) see image to understand
+generally, when user click on create blog the blog is created with id then the content is added and image uploaded to db is linked with blog id - refer to chatgpt option 2.
+
+document all this decision in readme
 2. DELETE /api/blogs/:id
 3. PATCH /api/blogs/:id
 4. PATCH /api/blog/:id/publish - publishBlog
@@ -23,6 +27,7 @@ Blog
 6. GET /api/blogs - get all the blogs
 7. GET /api/blogs/:id - get specific blog
 8. POST /api/blogs/:id/bookmark - bookmark a blog
+
 9. POST /api/blogs/:id/link - like a blog
 10. POST /api/blogs/comments/:id/link - like a comment
 11. POST /api/blogs/:id/comments - post a comment, reply to comment
