@@ -15,6 +15,20 @@ const uploadImage = asyncHandler(async()=>{
 
 })
 
+const saveChanges = asyncHandler(async(req, res)=>{
+    const {title, content} = req.body;
+    const {id} = req.user;
+    const blogId = req.params?.id;
+
+    const changeSaved = await blogService.saveChanges(title, content, blogId, id);
+
+    if(!changeSaved) throw new Error (`Try Again, Changes not saved`);
+
+    res.status(201).send(`Changes Saved!`);
+
+})
+
 export default {
-    createBlog
+    createBlog,
+    saveChanges
 }
