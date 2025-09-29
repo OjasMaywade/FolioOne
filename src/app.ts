@@ -15,6 +15,7 @@ import spotifyRouter from "./routes/spotify.routes.js"
 import indexRouter from "./routes/index.route.js"
 
 app.use("/api/v1", indexRouter)
+
 // app.use("/api/v1/auth", spotifyOauthRouter)
 // app.use("/api/v1/spotify", spotifyRouter)
 // app.use("/api/v1/user", userRouter)

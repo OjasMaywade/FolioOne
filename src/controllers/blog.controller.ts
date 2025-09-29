@@ -1,3 +1,4 @@
+import { request } from "express";
 import blogService from "../services/blog.service.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -27,8 +28,33 @@ const saveChanges = asyncHandler(async(req, res)=>{
     res.status(201).send(`Changes Saved!`);
 
 })
+const getDraftByID = asyncHandler(async(req, res)=>{
+    
+})
+
+const getPublishedByID = asyncHandler(async(req, res)=>{
+    
+})
+
+const publishBlog = asyncHandler(async(req, res)=>{
+    const {status, private_blog} = req.body;
+    const {id} = req.user;
+    const blogId = req.params.id;
+
+    const published = await blogService.publishBlog(status, private_blog, id, blogId);
+
+    if(!publishBlog) throw new Error (`Error while publishing the blog, please try again`);
+
+    res.status(200).send(`blog successfully published!`);
+})
+
+const getBlogByID = asyncHandler(async(req, res)=>{
+    
+})
+
 
 export default {
     createBlog,
-    saveChanges
+    saveChanges,
+    publishBlog
 }

@@ -31,7 +31,24 @@ const saveChanges = async(title, content, blogId, id)=>{
     return blogSaved;
 }
 
+const publishBlog = async(status, private_blog, id, blogId)=>{
+    if(!status || !private_blog) throw new Error(`info about status and private is required`);
+
+    if(status === "draft") throw new Error (`Blog status can't be draft while publishing the blog`);
+
+    if(private_blog === true) throw new Error (`Blog can't be private when publishing the blog`);
+
+    if(!id) throw new Error (`User ID of authenticated user is missing, can't proceed with the request`);
+
+    const updateStatus = await blogQuery.updateStatus(status, private_blog, id, blogId);
+
+    if(!updateStatus) throw new Error(`Error while updating the status in db`);
+
+    return updateStatus
+
+}
 export default {
     createBlog,
-    saveChanges
+    saveChanges,
+    publishBlog
 }

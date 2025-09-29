@@ -31,8 +31,21 @@ const searchBlog = async(blogId)=>{
     .executeTakeFirst();
 }
 
+const updateStatus = async(status, private_blog, id, blogId)=>{
+    return await db
+    .updateTable('blog')
+    .set({
+        'status': status,
+        'private': private_blog
+    })
+    .where('id','=',blogId)
+    .where('author_id','=',id)
+    .executeTakeFirst();
+}
+
 export default {
     createBlog,
     saveBlog,
-    searchBlog
+    searchBlog,
+    updateStatus
 }
