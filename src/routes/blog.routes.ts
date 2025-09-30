@@ -14,7 +14,7 @@ router.route('/:id').patch(auth, blogController.saveChanges);
 router.route('/:id').delete(auth);
 
 //can upload more than one image change single to array
-router.route('/upload').post(auth, upload.single('blogImage'), );
+router.route('/:id/upload').post(auth, upload.single('blogImage'), blogController.uploadImage);
 
 router.route('/:id/publish').post(auth, blogController.publishBlog);
 

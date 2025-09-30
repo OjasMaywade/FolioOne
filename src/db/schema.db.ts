@@ -11,12 +11,12 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 
 export interface Blog {
   author_id: number;
-  content: string;
+  content: string | null;
   created_at: Generated<Date | null>;
   id: Generated<number>;
-  private: number;
-  status: "draft" | "published";
-  title: string;
+  is_private: Generated<number>;
+  status: Generated<"draft" | "published">;
+  title: string | null;
   updated_at: Generated<Date | null>;
 }
 

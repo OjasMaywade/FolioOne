@@ -12,7 +12,13 @@ const createBlog = asyncHandler(async(req, res)=>{
     res.status(201).send('Blog Draft is successfully created')
 })
 
-const uploadImage = asyncHandler(async()=>{
+const uploadImage = asyncHandler(async(req,res)=>{
+    const {id} = req.user;
+    const blogId = req.params.id;
+    const filePath = req.blogImage;
+    console.log(req.file)
+
+    const uploaded = await blogService.uploadImages(id, blogId);
 
 })
 
@@ -37,11 +43,11 @@ const getPublishedByID = asyncHandler(async(req, res)=>{
 })
 
 const publishBlog = asyncHandler(async(req, res)=>{
-    const {status, private_blog} = req.body;
+    const {status, isPrivate} = req.body;
     const {id} = req.user;
     const blogId = req.params.id;
 
-    const published = await blogService.publishBlog(status, private_blog, id, blogId);
+    const published = await blogService.publishBlog(status, isPrivate, id, blogId);
 
     if(!publishBlog) throw new Error (`Error while publishing the blog, please try again`);
 
@@ -56,5 +62,6 @@ const getBlogByID = asyncHandler(async(req, res)=>{
 export default {
     createBlog,
     saveChanges,
-    publishBlog
+    publishBlog,
+    uploadImage
 }

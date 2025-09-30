@@ -1,5 +1,6 @@
-import { id } from "zod/v4/locales";
 import blogQuery from "../db/queries/blog.query.js";
+import fs from "fs";
+import awsS3 from "../utils/awsS3.js";
 
 const createBlog = async(id)=>{
     // if(!(title || content)) throw new Error (`Blog Title, Content is required`);
@@ -31,24 +32,38 @@ const saveChanges = async(title, content, blogId, id)=>{
     return blogSaved;
 }
 
-const publishBlog = async(status, private_blog, id, blogId)=>{
-    if(!status || !private_blog) throw new Error(`info about status and private is required`);
+const publishBlog = async(status, isPrivate, id, blogId)=>{
+    if(!status || !isPrivate) throw new Error(`info about status and private is required`);
 
     if(status === "draft") throw new Error (`Blog status can't be draft while publishing the blog`);
 
-    if(private_blog === true) throw new Error (`Blog can't be private when publishing the blog`);
+    if(isPrivate === true) throw new Error (`Blog can't be private when publishing the blog`);
 
     if(!id) throw new Error (`User ID of authenticated user is missing, can't proceed with the request`);
 
-    const updateStatus = await blogQuery.updateStatus(status, private_blog, id, blogId);
+    const updateStatus = await blogQuery.updateStatus(status, isPrivate, id, blogId);
 
     if(!updateStatus) throw new Error(`Error while updating the status in db`);
 
     return updateStatus
 
 }
+
+const uploadImages = async(id, blogId, path, filename)=>{
+    if(!id || ! blogId) throw new Error (`user and blog id is required`);
+
+    const fileData = fs.readFileSync(path);
+
+    if(!fileData) throw new Error(`unable to read file data from path`);
+
+    const uploadToS3 = await awsS3.uploadFile(fileData, filename);
+
+
+} 
+
 export default {
     createBlog,
     saveChanges,
-    publishBlog
+    publishBlog,
+    uploadImages
 }

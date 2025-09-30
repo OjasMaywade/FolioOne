@@ -31,12 +31,12 @@ const searchBlog = async(blogId)=>{
     .executeTakeFirst();
 }
 
-const updateStatus = async(status, private_blog, id, blogId)=>{
+const updateStatus = async(status, isPrivate, id, blogId)=>{
     return await db
     .updateTable('blog')
     .set({
         'status': status,
-        'private': private_blog
+        'is_private': isPrivate
     })
     .where('id','=',blogId)
     .where('author_id','=',id)
