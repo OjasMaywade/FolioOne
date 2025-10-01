@@ -1,6 +1,7 @@
-import blogQuery from "../db/queries/blog.query.js";
+import blogQuery from "../db/queries/blog/blog.query.js";
 import fs from "fs";
 import awsS3 from "../utils/awsS3.js";
+import mediaQuery from "../db/queries/blog/media.query.js";
 
 const createBlog = async(id)=>{
     // if(!(title || content)) throw new Error (`Blog Title, Content is required`);
@@ -49,7 +50,7 @@ const publishBlog = async(status, isPrivate, id, blogId)=>{
 
 }
 
-const uploadImages = async(id, blogId, path, filename)=>{
+const uploadImages = async(id, blogId, path, filename, description)=>{
     if(!id || ! blogId) throw new Error (`user and blog id is required`);
 
     const fileData = fs.readFileSync(path);
@@ -57,6 +58,16 @@ const uploadImages = async(id, blogId, path, filename)=>{
     if(!fileData) throw new Error(`unable to read file data from path`);
 
     const uploadToS3 = await awsS3.uploadFile(fileData, filename);
+
+    if(!uploadToS3) throw new Error(`Error while uploading image to cloud, try again: ${uploadToS3}`);
+
+    const mediaURL = process.env.URL + filename;
+
+    const insertBlogMedia = await mediaQuery.addBlogMedia(id, blogId, mediaURL, description);
+
+    if(!insertBlogMedia) throw new Error(`Error while saving image in db, try again`);
+
+    return {insertBlogMedia, mediaURL};
 
 
 } 

@@ -1,4 +1,4 @@
-import { db } from "../index.db.js";
+import { db } from "../../index.db.js";
 
 const createBlog = async(id)=>{
     return await db
@@ -42,6 +42,8 @@ const updateStatus = async(status, isPrivate, id, blogId)=>{
     .where('author_id','=',id)
     .executeTakeFirst();
 }
+
+
 
 export default {
     createBlog,

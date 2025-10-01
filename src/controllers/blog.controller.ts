@@ -14,11 +14,18 @@ const createBlog = asyncHandler(async(req, res)=>{
 
 const uploadImage = asyncHandler(async(req,res)=>{
     const {id} = req.user;
+    const {description} = req.body;
     const blogId = req.params.id;
-    const filePath = req.blogImage;
-    console.log(req.file)
+    const {path, filename} = req.file;
 
-    const uploaded = await blogService.uploadImages(id, blogId);
+    const uploaded = await blogService.uploadImages(id, blogId, path, filename, description);
+
+    if(!uploaded) throw new Error (`Error while adding image, try again`);
+
+    res.status(200).json({
+        message: `Image uploaded successfuly`,
+        link:  uploaded.mediaURL
+    })
 
 })
 

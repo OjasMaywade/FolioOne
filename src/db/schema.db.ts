@@ -20,6 +20,16 @@ export interface Blog {
   updated_at: Generated<Date | null>;
 }
 
+export interface BlogMedia {
+  alt_text: string | null;
+  blog_id: number;
+  deleted_at: Date | null;
+  id: Generated<number>;
+  media_url: string;
+  uploaded_at: Generated<Date | null>;
+  uploaded_by: number;
+}
+
 export interface Bookmark {
   blogId: number;
   created_at: Generated<Date | null>;
@@ -92,6 +102,7 @@ export interface User {
 
 export interface DB {
   blog: Blog;
+  blog_media: BlogMedia;
   bookmark: Bookmark;
   comment: Comment;
   finance: Finance;
