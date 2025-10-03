@@ -1,4 +1,3 @@
-import { request } from "express";
 import blogService from "../services/blog.service.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -14,7 +13,7 @@ const createBlog = asyncHandler(async(req, res)=>{
 
 const uploadImage = asyncHandler(async(req,res)=>{
     const {id} = req.user;
-    const {description} = req.body;
+    const description = req.body.description;
     const blogId = req.params.id;
     const {path, filename} = req.file;
 
@@ -26,7 +25,6 @@ const uploadImage = asyncHandler(async(req,res)=>{
         message: `Image uploaded successfuly`,
         link:  uploaded.mediaURL
     })
-
 })
 
 const saveChanges = asyncHandler(async(req, res)=>{
@@ -39,13 +37,28 @@ const saveChanges = asyncHandler(async(req, res)=>{
     if(!changeSaved) throw new Error (`Try Again, Changes not saved`);
 
     res.status(201).send(`Changes Saved!`);
+})
+
+const getAllDraft = asyncHandler(async(req, res)=>{
+    const {id} = req.user;
+
+    const allDraft = await blogService.getAllDrafts(id);
+
+    if(!allDraft) throw new Error(`Error while fetching the drafts: ${allDraft}`);
+
+    res.status(200).json(allDraft);
 
 })
+
 const getDraftByID = asyncHandler(async(req, res)=>{
     
 })
 
 const getPublishedByID = asyncHandler(async(req, res)=>{
+    
+})
+
+const getAllPublished = asyncHandler(async(req, res)=>{
     
 })
 
@@ -70,5 +83,6 @@ export default {
     createBlog,
     saveChanges,
     publishBlog,
-    uploadImage
+    uploadImage,
+    getAllDraft
 }

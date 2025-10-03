@@ -10,7 +10,7 @@ const createBlog = async(id)=>{
     .executeTakeFirst();
 }
 
-const saveBlog = async(title, content, id, blogId)=>{
+const saveBlog = async(title, content, blogId, id)=>{
     return await db
     .updateTable('blog')
     .set({
@@ -43,11 +43,19 @@ const updateStatus = async(status, isPrivate, id, blogId)=>{
     .executeTakeFirst();
 }
 
-
+const getAllDrafts = async(id)=>{
+    return await db
+    .selectFrom('blog')
+    .select(['title', 'content', 'created_at', 'author_id', 'status'])
+    .where('author_id','=',id)
+    .where('status','=',"draft")
+    .execute();
+}
 
 export default {
     createBlog,
     saveBlog,
     searchBlog,
-    updateStatus
+    updateStatus,
+    getAllDrafts
 }

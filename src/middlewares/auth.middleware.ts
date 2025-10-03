@@ -1,9 +1,9 @@
 import userQuery from "../db/queries/user.query.js";
 import { verifyAccessToken } from "../utils/jwt.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
-const auth = async(req,res,next)=>{
-    try {
-        const accessToken = req.cookies?.accessToken;
+const auth = asyncHandler(async(req,res,next)=>{
+        const accessToken = req.cookies?.accessToken; // this was throwing error in before try and catch and was not handled
 
         if(!accessToken) throw new Error(`Token unavailable`)
 
@@ -15,17 +15,17 @@ const auth = async(req,res,next)=>{
 
         const getUser = await userQuery.findUserById(verify.id);
 
-        if(!getUser) throw new Error(`Use does not exist with email: ${verify.email}`)
+        if(!getUser) throw new Error(`Use does not exist with id: ${verify.id}`);
         
             res.locals.user = getUser;
             req.user = getUser;
             next();
         
-    } catch (error) {
+    } 
+    /*catch (error) {
         console.log(error)
         throw new Error(`Authentication Faied: ${error.message}`)
-    }
-
-}
+    }*/
+)
 
 export {auth}
