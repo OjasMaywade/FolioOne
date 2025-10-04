@@ -52,10 +52,20 @@ const getAllDrafts = async(id)=>{
     .execute();
 }
 
+const getAllPubished = async(id)=>{
+    return await db
+    .selectFrom('blog')
+    .select(['title','content','created_at','author_id','status'])
+    .where('id','=',id)
+    .where('status','=','published')
+    .execute();
+}
+
 export default {
     createBlog,
     saveBlog,
     searchBlog,
     updateStatus,
-    getAllDrafts
+    getAllDrafts,
+    getAllPubished    
 }

@@ -76,11 +76,19 @@ const getAllDrafts = async(id)=>{
 
     const allDrafts = await blogQuery.getAllDrafts(id);
 
-    console.log(allDrafts);
-
     if(!allDrafts) throw new Error(`Error while fetching drafts, please try again`);
 
     return allDrafts;
+}
+
+const getAllPubished = async(id)=>{
+    if(!id) throw new Error(`User Id is required, please provide`)
+
+    const published = await blogQuery.getAllPubished(id);
+
+    if(!published) throw new Error(`Error while fetching all published for user: ${id}`)
+
+    return published;
 }
 
 export default {
@@ -88,5 +96,6 @@ export default {
     saveChanges,
     publishBlog,
     uploadImages,
-    getAllDrafts
+    getAllDrafts,
+    getAllPubished
 }

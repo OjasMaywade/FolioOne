@@ -59,7 +59,13 @@ const getPublishedByID = asyncHandler(async(req, res)=>{
 })
 
 const getAllPublished = asyncHandler(async(req, res)=>{
-    
+    const {id} = req.user;
+
+    const allPublished = await blogService.getAllPubished(id);
+
+    if(!allPublished) throw new Error(`Error while fetching the published blogs`);
+
+    res.status(200).json(allPublished);
 })
 
 const publishBlog = asyncHandler(async(req, res)=>{
@@ -84,5 +90,6 @@ export default {
     saveChanges,
     publishBlog,
     uploadImage,
-    getAllDraft
+    getAllDraft,
+    getAllPublished
 }
