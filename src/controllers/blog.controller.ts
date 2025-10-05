@@ -39,6 +39,17 @@ const saveChanges = asyncHandler(async(req, res)=>{
     res.status(201).send(`Changes Saved!`);
 })
 
+const editBlog = asyncHandler(async(req, res)=>{
+    const {id} = req.user;
+    const blogId = req.params.id;
+
+    const blogContent = await blogService.getBlogById(id, blogId);
+
+    if(!blogContent) throw new Error (`Error while processing your request, try again`);
+
+    res.status(200).json(blogContent);
+})
+
 const getAllDraft = asyncHandler(async(req, res)=>{
     const {id} = req.user;
 
@@ -116,5 +127,6 @@ export default {
     getAllPublished,
     getBlogById,
     getUnlistedBlogs,
-    deleteBlog
+    deleteBlog,
+    editBlog
 }
