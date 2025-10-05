@@ -15,7 +15,7 @@ router.route('/publish').get(auth, blogController.getAllPublished); //get all pu
 
 router.route('/unlisted').get(auth, blogController.getUnlistedBlogs); //get all unlisted blog by author
 
-router.route('/:id').delete(auth, ); //delete blog by id
+router.route('/:id').delete(auth, blogController.deleteBlog); //delete blog by id
 
 router.route('/:id/unlist').patch(auth, ) //unlist a published blog
 

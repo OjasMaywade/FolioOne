@@ -93,6 +93,19 @@ const getUnlistedBlogs = asyncHandler(async(req, res)=>{
     res.status(200).json(unlistedBlogs);
 })
 
+const deleteBlog = asyncHandler(async(req, res)=>{
+    const {id} = req.user;
+    const blogId = req.params.id;
+
+    const deleted = await blogService.deleteBlog(id, blogId);
+
+    if(!deleted) throw new Error (`Error while deleting the blog, please try again`);
+
+    res.status(200).json({
+        message: `Blog with ID: ${blogId}, deleted successfully`
+    })
+})
+
 
 export default {
     createBlog,
@@ -102,5 +115,6 @@ export default {
     getAllDraft,
     getAllPublished,
     getBlogById,
-    getUnlistedBlogs
+    getUnlistedBlogs,
+    deleteBlog
 }

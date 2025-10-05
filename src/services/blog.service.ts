@@ -71,6 +71,16 @@ const uploadImages = async(id, blogId, path, filename, description)=>{
     return {insertBlogMedia, mediaURL};
 }
 
+const deleteBlog = async(id, blogId)=>{
+    if(!id && !blogId) throw new Error (`user id and blog id is required`);
+
+    const deleteBlog = await blogQuery.deleteBlog(id, blogId);
+
+    if(!deleteBlog.numDeletedRows) throw new Error (`blog not deleted from db, try again`);
+
+    return deleteBlog;
+}
+
 const getAllDrafts = async(id)=>{
     if(!id) throw new Error(`User id not available, please provide`);
 
@@ -124,5 +134,6 @@ export default {
     getAllDrafts,
     getAllPubished,
     getBlogById,
-    getAllUnlisted
+    getAllUnlisted,
+    deleteBlog
 }

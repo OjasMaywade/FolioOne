@@ -10,7 +10,7 @@ const createBlog = async(id)=>{
     .executeTakeFirst();
 }
 
-const saveBlog = async(title, content, blogId, id)=>{
+const saveBlog = async(title, content, id, blogId)=>{
     return await db
     .updateTable('blog')
     .set({
@@ -67,7 +67,7 @@ const getBlogById = async(id, blogId)=>{
     .select(['title', 'content', 'author_id', 'created_at', 'updated_at', 'status'])
     .where('id','=',blogId)
     .where('author_id','=',id)
-    .executeTakeFirst();
+    .executeTakeFirstOrThrow();
 }
 
 const getUnlistedBlogs = async(id)=>{
@@ -79,6 +79,15 @@ const getUnlistedBlogs = async(id)=>{
     .where('status','=','published')
     .execute();
 }
+
+const deleteBlog = async(id, blogId)=>{
+    return await db
+    .deleteFrom('blog')
+    .where('author_id','=',id)
+    .where('id','=',blogId)
+    .executeTakeFirstOrThrow();
+}
+
 export default {
     createBlog,
     saveBlog,
@@ -87,5 +96,6 @@ export default {
     getAllDrafts,
     getAllPubished,
     getBlogById,
-    getUnlistedBlogs
+    getUnlistedBlogs,
+    deleteBlog
 }
