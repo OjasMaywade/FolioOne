@@ -78,13 +78,19 @@ const publishBlog = asyncHandler(async(req, res)=>{
 
     const published = await blogService.publishBlog(status, isPrivate, id, blogId);
 
-    if(!publishBlog) throw new Error (`Error while publishing the blog, please try again`);
+    if(!published) throw new Error (`Error while publishing the blog, please try again`);
 
     res.status(200).send(`blog successfully published!`);
 })
 
-const getBlogByID = asyncHandler(async(req, res)=>{
+const getUnlistedBlogs = asyncHandler(async(req, res)=>{
+    const {id} = req.user;
     
+    const unlistedBlogs = await blogService.getAllUnlisted(id);
+
+    if(!unlistedBlogs) throw new Error (`Error while processing request to get unlisted blogs`);
+
+    res.status(200).json(unlistedBlogs);
 })
 
 
@@ -95,5 +101,6 @@ export default {
     uploadImage,
     getAllDraft,
     getAllPublished,
-    getBlogById
+    getBlogById,
+    getUnlistedBlogs
 }

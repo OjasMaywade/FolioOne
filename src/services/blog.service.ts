@@ -93,6 +93,18 @@ const getAllPubished = async(id)=>{
     return published;
 }
 
+const getAllUnlisted = async(id)=>{
+    if(!id) throw new Error (`User id is required`);
+
+    const unlistedBlogs = await blogQuery.getUnlistedBlogs(id);
+
+    if(Array.isArray(unlistedBlogs) && unlistedBlogs.length === 0) throw new Error (`No Unlisted blog available with user: ${id}`);
+
+    if(!unlistedBlogs) throw new Error (`Error while fetching unlisted blogs from db, try again`);
+
+    return unlistedBlogs;
+}
+
 const getBlogById = async(id, blogId)=>{
     if(!id && !blogId) throw new Error (`user id and blogId is required, try again`);
 
@@ -111,5 +123,6 @@ export default {
     uploadImages,
     getAllDrafts,
     getAllPubished,
-    getBlogById
+    getBlogById,
+    getAllUnlisted
 }

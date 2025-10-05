@@ -70,6 +70,15 @@ const getBlogById = async(id, blogId)=>{
     .executeTakeFirst();
 }
 
+const getUnlistedBlogs = async(id)=>{
+    return await db
+    .selectFrom('blog')
+    .select(['title', 'content', 'author_id', 'status', 'is_private'])
+    .where('author_id','=',id)
+    .where('is_private','=',1)
+    .where('status','=','published')
+    .execute();
+}
 export default {
     createBlog,
     saveBlog,
@@ -77,5 +86,6 @@ export default {
     updateStatus,
     getAllDrafts,
     getAllPubished,
-    getBlogById
+    getBlogById,
+    getUnlistedBlogs
 }

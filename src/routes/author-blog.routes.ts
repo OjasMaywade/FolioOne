@@ -13,7 +13,7 @@ router.route('/drafts').get(auth, blogController.getAllDraft); //get all draft b
 
 router.route('/publish').get(auth, blogController.getAllPublished); //get all published blog by author
 
-router.route('/unlisted').get(auth, ); //get all unlisted blog by author
+router.route('/unlisted').get(auth, blogController.getUnlistedBlogs); //get all unlisted blog by author
 
 router.route('/:id').delete(auth, ); //delete blog by id
 
@@ -27,8 +27,6 @@ router.route('/:id').patch(auth, blogController.saveChanges); //update draft blo
 router.route('/:id/upload').post(auth, upload.single('blogImage'), blogController.uploadImage); //upload media
 
 router.route('/:id/publish').post(auth, blogController.publishBlog); //publish draft blog
-
-//Can this two get blog by id be merged into one
 
 router.route('/:id').get(blogController.getBlogById);
 
