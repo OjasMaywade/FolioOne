@@ -61,7 +61,7 @@ const getAllPubished = async(id)=>{
     .execute();
 }
 
-const getDraftByID = async(id, blogId)=>{
+const getBlogById = async(id, blogId)=>{
     return await db
     .selectFrom('blog')
     .select(['title', 'content', 'author_id', 'created_at', 'updated_at', 'status'])
@@ -69,6 +69,7 @@ const getDraftByID = async(id, blogId)=>{
     .where('author_id','=',id)
     .executeTakeFirst();
 }
+
 export default {
     createBlog,
     saveBlog,
@@ -76,5 +77,5 @@ export default {
     updateStatus,
     getAllDrafts,
     getAllPubished,
-    getDraftByID
+    getBlogById
 }

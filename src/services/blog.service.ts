@@ -93,17 +93,16 @@ const getAllPubished = async(id)=>{
     return published;
 }
 
-const getDraftByID = async(id, blogId)=>{
-    if(!id) throw new Error (`User Id not provided, can't process this request`);
+const getBlogById = async(id, blogId)=>{
+    if(!id && !blogId) throw new Error (`user id and blogId is required, try again`);
 
-    if(!blogId) throw new Error(`Please provide the blog Id, try again`);
+    const blogContent = await blogQuery.getBlogById(id, blogId);
 
-    const getDraft = await blogQuery.getDraftByID(id, blogId);
-
-    if(!getDraft) throw new Error (`Try Again, Issue while fetching your blog from db`);
+    if(blogContent === undefined) throw new Error (`No publish blog with blog Id: ${blogId} under user: ${id}`);
     
-    return getDraft;
+    return blogContent;
 }
+
 
 export default {
     createBlog,
@@ -112,5 +111,5 @@ export default {
     uploadImages,
     getAllDrafts,
     getAllPubished,
-    getDraftByID
+    getBlogById
 }
