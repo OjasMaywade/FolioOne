@@ -51,6 +51,14 @@ const getAllDraft = asyncHandler(async(req, res)=>{
 })
 
 const getDraftByID = asyncHandler(async(req, res)=>{
+    const {id} = req.user;
+    const blogId = req.params.id;
+
+    const draft = await blogService.getDraftByID(id, blogId);
+
+    if(!draft) throw new Error (`Try Again, can't get your draft`);
+
+    res.status(200).json(draft)
     
 })
 
@@ -91,5 +99,6 @@ export default {
     publishBlog,
     uploadImage,
     getAllDraft,
-    getAllPublished
+    getAllPublished,
+    getDraftByID
 }

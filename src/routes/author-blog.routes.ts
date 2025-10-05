@@ -5,6 +5,8 @@ import { upload } from "../middlewares/multer.middleware.js";
 
 const router = Router();
 
+router.use(auth)
+
 router.route('/').post(auth, blogController.createBlog);  //create blog without content
 
 router.route('/:id').patch(auth, blogController.saveChanges); //update draft blogs
@@ -24,8 +26,7 @@ router.route('/:id/unlist').patch(auth) //unlist a published blog
 
 router.route('/:id/save&publish').patch(auth) //save the edit publish blog and publish
 
-
-router.route('/')
+router.route('/:id').get(blogController.getDraftByID )
 
 
 export default router;

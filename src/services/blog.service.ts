@@ -88,7 +88,21 @@ const getAllPubished = async(id)=>{
 
     if(!published) throw new Error(`Error while fetching all published for user: ${id}`)
 
+    if(Array.isArray(published) && published.length === 0) throw new Error (`User does not have a published blog`)
+
     return published;
+}
+
+const getDraftByID = async(id, blogId)=>{
+    if(!id) throw new Error (`User Id not provided, can't process this request`);
+
+    if(!blogId) throw new Error(`Please provide the blog Id, try again`);
+
+    const getDraft = await blogQuery.getDraftByID(id, blogId);
+
+    if(!getDraft) throw new Error (`Try Again, Issue while fetching your blog from db`);
+    
+    return getDraft;
 }
 
 export default {
@@ -97,5 +111,6 @@ export default {
     publishBlog,
     uploadImages,
     getAllDrafts,
-    getAllPubished
+    getAllPubished,
+    getDraftByID
 }
