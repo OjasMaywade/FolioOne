@@ -25,7 +25,7 @@ router.route('/:id')
 
 router.route('/:id/edit').get(blogController.editBlog);
 
-router.route('/:id/unlist').patch( ) //unlist a published blog
+router.route('/:id/unlist').patch(blogController.unlistBlog) //unlist a published blog
 
 router.route('/:id/save&publish').patch(auth, ) //save the edit publish blog and publish
 

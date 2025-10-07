@@ -61,6 +61,7 @@ const getAllDraft = asyncHandler(async(req, res)=>{
 
 })
 
+// Update this controller and return blog content with user interaction details like comments, views, etc
 const getBlogById = asyncHandler(async(req, res)=>{
     const {id} = req.user;
     const blogId = req.params.id;
@@ -117,6 +118,20 @@ const deleteBlog = asyncHandler(async(req, res)=>{
     })
 })
 
+const unlistBlog = asyncHandler(async(req,res)=>{
+    const {id} = req.user;
+    const blogId = req.params.id;
+    const {isPrivate} = req.body;
+
+    const unlisted = await blogService.unlistBlog(id, blogId, isPrivate);
+
+    if(!unlisted) throw new Error (`Internal Error While unlisting the blog`);
+
+    res.status(200).json({
+        message: `This Blog is now unlisted`
+    })
+
+})
 
 export default {
     createBlog,
@@ -128,5 +143,6 @@ export default {
     getBlogById,
     getUnlistedBlogs,
     deleteBlog,
-    editBlog
+    editBlog,
+    unlistBlog
 }

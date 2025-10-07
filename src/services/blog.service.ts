@@ -35,7 +35,7 @@ const saveChanges = async(title, content, blogId, id)=>{
 }
 
 const publishBlog = async(status, isPrivate, id, blogId)=>{
-    if(!status || !isPrivate) throw new Error(`info about status and private is required`);
+    if(!status || isPrivate == null) throw new Error(`info about status and private is required`);
 
     if(status === "draft") throw new Error (`Blog status can't be draft while publishing the blog`);
 
@@ -45,10 +45,9 @@ const publishBlog = async(status, isPrivate, id, blogId)=>{
 
     const updateStatus = await blogQuery.updateStatus(status, isPrivate, id, blogId);
 
-    if(!updateStatus) throw new Error(`Error while updating the status in db`);
+    if(!updateStatus.numUpdatedRows) throw new Error(`Error while updating the status in db`);
 
     return updateStatus
-
 }
 
 const uploadImages = async(id, blogId, path, filename, description)=>{
@@ -125,6 +124,18 @@ const getBlogById = async(id, blogId)=>{
     return blogContent;
 }
 
+const unlistBlog = async(id, blogId, isPrivate)=>{
+    if(!id && !blogId) throw new Error (`User Id and blog ID is required`);
+
+    if(!isPrivate) throw new Error(`isPrivate is not provided, cannot proceed`);
+
+    const unlist = await blogQuery.unlistBlog(id, blogId, isPrivate);
+
+    if(!unlist.numChangedRows) throw new Error (`Internal Error faced while unlisting Blog ${blogId}, please try again`);
+
+    return unlist;
+}
+
 
 export default {
     createBlog,
@@ -135,5 +146,6 @@ export default {
     getAllPubished,
     getBlogById,
     getAllUnlisted,
-    deleteBlog
+    deleteBlog,
+    unlistBlog
 }

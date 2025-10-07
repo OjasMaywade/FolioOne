@@ -35,12 +35,12 @@ const updateStatus = async(status, isPrivate, id, blogId)=>{
     return await db
     .updateTable('blog')
     .set({
-        'status': status,
-        'is_private': isPrivate
+        'is_private': isPrivate,
+        'status': status
     })
     .where('id','=',blogId)
     .where('author_id','=',id)
-    .executeTakeFirst();
+    .executeTakeFirstOrThrow();
 }
 
 const getAllDrafts = async(id)=>{
@@ -64,7 +64,7 @@ const getAllPubished = async(id)=>{
 const getBlogById = async(id, blogId)=>{
     return await db
     .selectFrom('blog')
-    .select(['title', 'content', 'author_id', 'created_at', 'updated_at', 'status'])
+    .select(['title', 'content', 'author_id','status'])
     .where('id','=',blogId)
     .where('author_id','=',id)
     .executeTakeFirstOrThrow();
@@ -88,6 +88,18 @@ const deleteBlog = async(id, blogId)=>{
     .executeTakeFirstOrThrow();
 }
 
+const unlistBlog = async(id, blogId, isPrivate)=>{
+    return await db
+    .updateTable('blog')
+    .set({
+        is_private: isPrivate
+    })
+    .where('id','=',blogId)
+    .where('author_id','=',id)
+    .where('status','=','published')
+    .executeTakeFirstOrThrow();
+}
+
 export default {
     createBlog,
     saveBlog,
@@ -97,5 +109,6 @@ export default {
     getAllPubished,
     getBlogById,
     getUnlistedBlogs,
-    deleteBlog
+    deleteBlog,
+    unlistBlog
 }
