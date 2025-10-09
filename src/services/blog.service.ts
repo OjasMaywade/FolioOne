@@ -34,16 +34,16 @@ const saveChanges = async(title, content, blogId, id)=>{
     return blogSaved;
 }
 
-const publishBlog = async(status, isPrivate, id, blogId)=>{
-    if(!status || isPrivate == null) throw new Error(`info about status and private is required`);
+const publishBlog = async(status, id, blogId)=>{
+    if(!status) throw new Error(`info about status is required`);
 
     if(status === "draft") throw new Error (`Blog status can't be draft while publishing the blog`);
 
-    if(isPrivate === true) throw new Error (`Blog can't be private when publishing the blog`);
+    // if(isPrivate === true) throw new Error (`Blog can't be private when publishing the blog`);
 
     if(!id) throw new Error (`User ID of authenticated user is missing, can't proceed with the request`);
 
-    const updateStatus = await blogQuery.updateStatus(status, isPrivate, id, blogId);
+    const updateStatus = await blogQuery.updateStatus(status, id, blogId);
 
     if(!updateStatus.numUpdatedRows) throw new Error(`Error while updating the status in db`);
 
@@ -124,15 +124,18 @@ const getBlogById = async(id, blogId)=>{
     return blogContent;
 }
 
-const unlistBlog = async(id, blogId, isPrivate)=>{
-    if(!id && !blogId) throw new Error (`User Id and blog ID is required`);
+const unlistBlog = async(id, blogId, status)=>{
 
-    if(!isPrivate) throw new Error(`isPrivate is not provided, cannot proceed`);
+    const findBlog = await blogQuery.searchBlog(blogId);
 
-    const unlist = await blogQuery.unlistBlog(id, blogId, isPrivate);
+    if(!findBlog) throw new Error(`Blog not available with Id: ${blogId}`);
 
+    if(!(findBlog.author_id === id)) throw new Error (`Blog Doesn't belongs to User: ${id}, unauthorized to make changes`);
+
+    const unlist = await blogQuery.unlistBlog(id, blogId, status);
+console.log(unlist[0], unlist, unlist.numChangedRows, unlist.numUpdatedRows)
     if(!unlist.numChangedRows) throw new Error (`Internal Error faced while unlisting Blog ${blogId}, please try again`);
-
+    
     return unlist;
 }
 

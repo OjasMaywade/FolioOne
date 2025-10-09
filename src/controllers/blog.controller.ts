@@ -88,7 +88,7 @@ const publishBlog = asyncHandler(async(req, res)=>{
     const {id} = req.user;
     const blogId = req.params.id;
 
-    const published = await blogService.publishBlog(status, isPrivate, id, blogId);
+    const published = await blogService.publishBlog(status, id, blogId);
 
     if(!published) throw new Error (`Error while publishing the blog, please try again`);
 
@@ -121,9 +121,13 @@ const deleteBlog = asyncHandler(async(req, res)=>{
 const unlistBlog = asyncHandler(async(req,res)=>{
     const {id} = req.user;
     const blogId = req.params.id;
-    const {isPrivate} = req.body;
+    const {status} = req.body;
 
-    const unlisted = await blogService.unlistBlog(id, blogId, isPrivate);
+    if(!blogId) throw new Error ('Blog ID is required');
+
+    if(!status) throw new Error(`status is not provided, cannot proceed`);
+
+    const unlisted = await blogService.unlistBlog(id, blogId, status);
 
     if(!unlisted) throw new Error (`Internal Error While unlisting the blog`);
 
@@ -132,6 +136,10 @@ const unlistBlog = asyncHandler(async(req,res)=>{
     })
 
 })
+
+// const saveAndPublish = asyncHandler(async(req, res)=>{
+//     const {id} = 
+// })
 
 export default {
     createBlog,

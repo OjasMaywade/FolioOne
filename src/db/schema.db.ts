@@ -14,8 +14,7 @@ export interface Blog {
   content: string | null;
   created_at: Generated<Date | null>;
   id: Generated<number>;
-  is_private: number | null;
-  status: Generated<"draft" | "published">;
+  status: Generated<"draft" | "published" | "unlisted">;
   title: string | null;
   updated_at: Generated<Date | null>;
 }

@@ -28,14 +28,13 @@ const searchBlog = async(blogId)=>{
     .selectFrom('blog')
     .select(['title', 'author_id'])
     .where("id","=", blogId)
-    .executeTakeFirst();
+    .executeTakeFirstOrThrow();
 }
 
-const updateStatus = async(status, isPrivate, id, blogId)=>{
+const updateStatus = async(status, id, blogId)=>{
     return await db
     .updateTable('blog')
     .set({
-        'is_private': isPrivate,
         'status': status
     })
     .where('id','=',blogId)
@@ -73,9 +72,9 @@ const getBlogById = async(id, blogId)=>{
 const getUnlistedBlogs = async(id)=>{
     return await db
     .selectFrom('blog')
-    .select(['title', 'content', 'author_id', 'status', 'is_private'])
+    .select(['title', 'content', 'author_id', 'status'])
     .where('author_id','=',id)
-    .where('is_private','=',1)
+    .where('status','=','unlisted')
     .where('status','=','published')
     .execute();
 }
@@ -88,11 +87,11 @@ const deleteBlog = async(id, blogId)=>{
     .executeTakeFirstOrThrow();
 }
 
-const unlistBlog = async(id, blogId, isPrivate)=>{
+const unlistBlog = async(id, blogId, status)=>{
     return await db
     .updateTable('blog')
     .set({
-        is_private: isPrivate
+        status: status
     })
     .where('id','=',blogId)
     .where('author_id','=',id)
