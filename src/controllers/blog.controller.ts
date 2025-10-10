@@ -1,4 +1,6 @@
 import blogService from "../services/blog.service.js";
+import { ApiError } from "../utils/apiError.js";
+import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 const createBlog = asyncHandler(async(req, res)=>{
@@ -123,18 +125,15 @@ const unlistBlog = asyncHandler(async(req,res)=>{
     const blogId = req.params.id;
     const {status} = req.body;
 
-    if(!blogId) throw new Error ('Blog ID is required');
+    if(!blogId) throw new ApiError ('Blog ID is required', 400);
 
-    if(!status) throw new Error(`status is not provided, cannot proceed`);
+    if(!status) throw new ApiError(`status is not provided, cannot proceed`, 400);
 
     const unlisted = await blogService.unlistBlog(id, blogId, status);
 
-    if(!unlisted) throw new Error (`Internal Error While unlisting the blog`);
+    if(!unlisted) throw new ApiError (`Internal Error While unlisting the blog`, 500);
 
-    res.status(200).json({
-        message: `This Blog is now unlisted`
-    })
-
+    res.json(new ApiResponse(200,'This Blog is now unlisted', {}))
 })
 
 // const saveAndPublish = asyncHandler(async(req, res)=>{

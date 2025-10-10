@@ -28,7 +28,7 @@ const searchBlog = async(blogId)=>{
     .selectFrom('blog')
     .select(['title', 'author_id'])
     .where("id","=", blogId)
-    .executeTakeFirstOrThrow();
+    .executeTakeFirst();
 }
 
 const updateStatus = async(status, id, blogId)=>{

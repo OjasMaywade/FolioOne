@@ -3,6 +3,7 @@ import fs from "fs";
 import awsS3 from "../utils/awsS3.js";
 import mediaQuery from "../db/queries/blog/media.query.js";
 import { all } from "axios";
+import { ApiError } from "../utils/apiError.js";
 
 const createBlog = async(id)=>{
     // if(!(title || content)) throw new Error (`Blog Title, Content is required`);
@@ -125,16 +126,15 @@ const getBlogById = async(id, blogId)=>{
 }
 
 const unlistBlog = async(id, blogId, status)=>{
-
     const findBlog = await blogQuery.searchBlog(blogId);
 
-    if(!findBlog) throw new Error(`Blog not available with Id: ${blogId}`);
+    if(!findBlog) throw new ApiError(`Blog not available with Id: ${blogId}`, 404);
 
-    if(!(findBlog.author_id === id)) throw new Error (`Blog Doesn't belongs to User: ${id}, unauthorized to make changes`);
+    if(!(findBlog.author_id === id)) throw new ApiError (`Blog Doesn't belongs to User: ${id}, unauthorized to make changes`, 401);
 
     const unlist = await blogQuery.unlistBlog(id, blogId, status);
-console.log(unlist[0], unlist, unlist.numChangedRows, unlist.numUpdatedRows)
-    if(!unlist.numChangedRows) throw new Error (`Internal Error faced while unlisting Blog ${blogId}, please try again`);
+    
+    if(!unlist.numChangedRows) throw new ApiError (`Internal Error faced while unlisting Blog ${blogId}, please try again`, 500);
     
     return unlist;
 }
