@@ -1,6 +1,6 @@
 class ApiResponse{
     public statusCode: number;
-    public data: object|null;
+    public data: object|null|any;
     public message: string;
     public success: boolean
     constructor(statusCode: number, message: string, data?: object|null ){
