@@ -4,6 +4,7 @@ import awsS3 from "../utils/awsS3.js";
 import mediaQuery from "../db/queries/blog/media.query.js";
 import { all } from "axios";
 import { ApiError } from "../utils/apiError.js";
+import { title } from "process";
 
 const createBlog = async(id)=>{
 
@@ -62,7 +63,6 @@ const uploadImages = async(id, blogId, path, filename, description)=>{
 
     const insertBlogMedia = await mediaQuery.addBlogMedia(id, blogId, mediaURL, description);
 
-    console.log(!insertBlogMedia.insertId || !insertBlogMedia.numInsertedOrUpdatedRows);
     if(!insertBlogMedia.insertId || !insertBlogMedia.numInsertedOrUpdatedRows) throw new ApiError(`Error while saving image in db, try again`, 500);
 
     return {mediaURL};
@@ -135,6 +135,20 @@ const unlistBlog = async(id, blogId, status)=>{
     return unlist;
 }
 
+const saveAndPublish = async(id, blogId, title, content, status)=>{
+    const getBlog = await blogQuery.searchBlog(blogId);
+
+    if(!getBlog) throw new ApiError(`Blog not available with blog id: ${blogId}`,400);
+
+    if(getBlog.author_id !== id) throw new ApiError('Blog doesnot belong to author, unauthorized access', 401);
+
+    const saveInDb = await blogQuery.saveAndPublish(id, blogId, title, content);
+    console.log(saveInDb)
+    if(!saveInDb) throw new ApiError('Error while saving changes in db', 500);
+
+    return saveInDb;
+}
+
 
 export default {
     createBlog,
@@ -146,5 +160,6 @@ export default {
     getBlogById,
     getAllUnlisted,
     deleteBlog,
-    unlistBlog
+    unlistBlog,
+    saveAndPublish
 }

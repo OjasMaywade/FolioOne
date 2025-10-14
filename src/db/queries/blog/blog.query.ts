@@ -1,3 +1,4 @@
+import { title } from "process";
 import { db } from "../../index.db.js";
 
 const createBlog = async(id)=>{
@@ -99,6 +100,21 @@ const unlistBlog = async(id, blogId, status)=>{
     .executeTakeFirstOrThrow();
 }
 
+
+//should i return the blog content after the saving operation
+const saveAndPublish = async(id, blogId, title, content)=>{
+    return await db
+    .updateTable('blog')
+    .set({
+        title: title,
+        content: content,
+        status: 'published'
+    })
+    .where('id', '=', blogId)
+    .where('author_id','=', id)
+    .execute()
+}
+
 export default {
     createBlog,
     saveBlog,
@@ -109,5 +125,6 @@ export default {
     getBlogById,
     getUnlistedBlogs,
     deleteBlog,
-    unlistBlog
+    unlistBlog,
+    saveAndPublish
 }

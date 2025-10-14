@@ -140,9 +140,20 @@ const unlistBlog = asyncHandler(async(req,res)=>{
     res.json(new ApiResponse(200,'This Blog is now unlisted', {}))
 })
 
-// const saveAndPublish = asyncHandler(async(req, res)=>{
-//     const {id} = 
-// })
+const saveAndPublish = asyncHandler(async(req, res)=>{
+    const {id} = req.user;
+    const blogId = req.params.id;
+    const {title, content, status} = req.body;
+
+    if(!blogId) throw new ApiError('blogId is required, cannot proceed with blogId', 400);
+    if(!title || !content) throw new ApiError('Title and content is required', 400);
+
+    const save = await blogService.saveAndPublish(id, blogId, title, content, status);
+
+    if(!save) throw new ApiError('Error while processing your request, try again', 500);
+
+    res.json(new ApiResponse(200, 'Blog saved and published successfully', save));
+})
 
 export default {
     createBlog,
@@ -155,5 +166,6 @@ export default {
     getUnlistedBlogs,
     deleteBlog,
     editBlog,
-    unlistBlog
+    unlistBlog,
+    saveAndPublish
 }

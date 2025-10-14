@@ -27,7 +27,7 @@ router.route('/:id/edit').get(blogController.editBlog);
 
 router.route('/:id/unlist').patch(blogController.unlistBlog) //unlist a published blog
 
-router.route('/:id/save&publish').patch(auth, ) //save the edit publish blog and publish
+router.route('/:id/saveAndPublish').patch(auth, blogController.saveAndPublish) //save the edit publish blog and publish
 
 //can upload more than one image change single to array
 router.route('/:id/upload').post(auth, upload.single('blogImage'), blogController.uploadImage); //upload media
