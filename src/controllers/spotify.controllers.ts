@@ -29,12 +29,6 @@ const nowPlaying = asyncHandler(async(req,res)=>{
             Authorization: `Bearer ${access_token}`
         }
     });
-    const deviceId = await axios.get('https://api.spotify.com/v1/me/player/devices',{
-        headers:{
-            Authorization: `Bearer ${access_token}`
-        }
-    })
-    console.log(deviceId)
 
     console.log(nowPlaying.data)
     res.json(new ApiResponse(200, 'Now Playing',nowPlaying.data))
@@ -47,14 +41,7 @@ const stopPlayback = asyncHandler(async(req, res)=>{
             Authorization: `Bearer ${access_token}`
         }
     });
-
-
-    const deviceId = await axios.get('https://api.spotify.com/v1/me/player/devices',{
-        headers:{
-            Authorization: `Bearer ${access_token}`
-        }
-    })
-    console.log(deviceId)
+    
     console.log(stop);
     res.json(new ApiResponse(200, 'Song stoped', stop))
 })

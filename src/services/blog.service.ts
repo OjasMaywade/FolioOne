@@ -6,13 +6,10 @@ import { all } from "axios";
 import { ApiError } from "../utils/apiError.js";
 
 const createBlog = async(id)=>{
-    // if(!(title || content)) throw new Error (`Blog Title, Content is required`);
-
-    if(!id) throw new Error (`User Id is required`);
 
     const blogCreated = await blogQuery.createBlog(id);
 
-    if(!blogCreated) throw new Error (`Issue while saving your Blog, Try Again`);
+    if(!blogCreated) throw new ApiError (`Issue while creating your Blog, Try Again`, 500);
 
     return blogCreated;
 }
@@ -52,23 +49,23 @@ const publishBlog = async(status, id, blogId)=>{
 }
 
 const uploadImages = async(id, blogId, path, filename, description)=>{
-    if(!id || ! blogId) throw new Error (`user and blog id is required`);
 
     const fileData = fs.readFileSync(path);
 
-    if(!fileData) throw new Error(`unable to read file data from path`);
+    if(!fileData) throw new ApiError(`unable to read file data from path`, 500);
 
     const uploadToS3 = await awsS3.uploadFile(fileData, filename);
 
-    if(!uploadToS3) throw new Error(`Error while uploading image to cloud, try again: ${uploadToS3}`);
+    if(uploadToS3.$metadata.httpStatusCode !== 200) throw new ApiError(`Error while uploading image to cloud, try again: ${uploadToS3}`, 500);
 
     const mediaURL = process.env.URL + filename;
 
     const insertBlogMedia = await mediaQuery.addBlogMedia(id, blogId, mediaURL, description);
 
-    if(!insertBlogMedia) throw new Error(`Error while saving image in db, try again`);
+    console.log(!insertBlogMedia.insertId || !insertBlogMedia.numInsertedOrUpdatedRows);
+    if(!insertBlogMedia.insertId || !insertBlogMedia.numInsertedOrUpdatedRows) throw new ApiError(`Error while saving image in db, try again`, 500);
 
-    return {insertBlogMedia, mediaURL};
+    return {mediaURL};
 }
 
 const deleteBlog = async(id, blogId)=>{
@@ -116,11 +113,10 @@ const getAllUnlisted = async(id)=>{
 }
 
 const getBlogById = async(id, blogId)=>{
-    if(!id && !blogId) throw new Error (`user id and blogId is required, try again`);
 
     const blogContent = await blogQuery.getBlogById(id, blogId);
 
-    if(blogContent === undefined) throw new Error (`No publish blog with blog Id: ${blogId} under user: ${id}`);
+    if(blogContent === undefined) throw new ApiError (`No publish blog with blog Id: ${blogId} under user: ${id}`, 404);
     
     return blogContent;
 }
