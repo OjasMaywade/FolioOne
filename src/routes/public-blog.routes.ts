@@ -1,10 +1,11 @@
 import {Router} from "express";
+import blogController from "../controllers/blog.controller.js";
 
 const router = Router();
 
 router.route('/').get() // get all the published blogs
 
-router.route('/:id').get() //get blog ny id
+router.route('/:id').get(blogController.getBlogById) //get blog ny id
 
 router.route('/?').get() //get blog by title, content, tags, category, etc
 

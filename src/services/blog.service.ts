@@ -6,6 +6,13 @@ import { all } from "axios";
 import { ApiError } from "../utils/apiError.js";
 import { title } from "process";
 
+const get = async (authorId, blogId, status)=>{
+    
+    if(blogId){
+        return await blogQuery.getBlogById(blogId, authorId);
+    }
+}
+
 const createBlog = async(id)=>{
 
     const blogCreated = await blogQuery.createBlog(id);
@@ -144,11 +151,10 @@ const saveAndPublish = async(id, blogId, title, content, status)=>{
 
     const saveInDb = await blogQuery.saveAndPublish(id, blogId, title, content);
     console.log(saveInDb)
-    if(!saveInDb) throw new ApiError('Error while saving changes in db', 500);
+    if(!saveInDb[0].numChangedRows || !saveInDb[0].numUpdatedRows) throw new ApiError('Error while saving changes in db', 500);
 
     return saveInDb;
 }
-
 
 export default {
     createBlog,

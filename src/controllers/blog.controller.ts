@@ -155,6 +155,10 @@ const saveAndPublish = asyncHandler(async(req, res)=>{
     res.json(new ApiResponse(200, 'Blog saved and published successfully', save));
 })
 
+const getAllPublishedBlogs = asyncHandler(async(req, res)=>{
+    
+})
+
 export default {
     createBlog,
     saveChanges,
