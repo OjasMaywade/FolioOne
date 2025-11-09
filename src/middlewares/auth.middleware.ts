@@ -4,7 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 
 const auth = asyncHandler(async(req,res,next)=>{
         const accessToken = req.cookies?.accessToken; // this was throwing error in before try and catch and was not handled
-
+        console.log(accessToken)
         if(!accessToken) throw new Error(`Token unavailable`)
 
         const verify = await verifyAccessToken(accessToken);

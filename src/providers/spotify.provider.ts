@@ -1,10 +1,11 @@
 import axios from "axios";
+
 const redirectUrl = 'https://accounts.spotify.com/authorize?' +
     new URLSearchParams({
       client_id: process.env.SPOTIFY_CLIENT_ID,
       response_type: 'code',
       redirect_uri: process.env.REDIRECT_URI,
-      scope: 'user-read-private user-read-email user-top-read user-modify-playback-state user-read-currently-playing user-read-playback-state'  
+      scope: 'user-read-private user-read-email user-follow-read user-top-read user-modify-playback-state user-read-currently-playing user-read-playback-state'  
     }).toString();
 
     const token = async(code)=>{

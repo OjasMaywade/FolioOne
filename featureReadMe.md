@@ -21,13 +21,12 @@ generally, when user click on create blog the blog is created with id then the c
 
 document all this decision in readme
 2. DELETE /api/blogs/:id
-3. PATCH /api/blogs/:id
-4. PATCH /api/blog/:id/publish - publishBlog
+3. PATCH /api/blogs/:id - Done
+4. PATCH /api/blog/:id/publish - publishBlog   ![alt text](image-2.png) limit set to publish in a day (https://medium.com/p/3f49846d5ad9/publish)
 5. GET /api/blogs/search?q=...... -  blog by title, author, content (Use Search Params)
 6. GET /api/blogs - get all the blogs
 7. GET /api/blogs/:id - get specific blog
 8. POST /api/blogs/:id/bookmark - bookmark a blog
-
 9. POST /api/blogs/:id/link - like a blog
 10. POST /api/blogs/comments/:id/link - like a comment
 11. POST /api/blogs/:id/comments - post a comment, reply to comment
@@ -38,6 +37,7 @@ document all this decision in readme
 16. POST /api/blogs/save-draft
 17. GET /api/blogs?tag=tech
 18. CRON JOB to notify subscriber of new blog publish from user
+19. POST /api/v1/blog/:id/upload - upload images added in the blog - Done
 
 Todo
 1. GET /api/todos
