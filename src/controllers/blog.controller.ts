@@ -156,8 +156,15 @@ const saveAndPublish = asyncHandler(async(req, res)=>{
     res.json(new ApiResponse(200, 'Blog saved and published successfully', save));
 })
 
+//Controller for public routes
+
 const getAllPublishedBlogs = asyncHandler(async(req, res)=>{
     
+    const blogs = await blogService.getAllPublishedBlogs();
+
+    if(!blogs) throw new ApiError("Can't fetch the blogs", 400);
+
+    res.json(new ApiResponse(200, 'Returned all publshed blogs', blogs));
 
 })
 
@@ -173,5 +180,6 @@ export default {
     deleteBlog,
     editBlog,
     unlistBlog,
-    saveAndPublish
+    saveAndPublish,
+    getAllPublishedBlogs
 }

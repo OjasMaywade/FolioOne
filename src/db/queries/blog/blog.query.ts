@@ -75,11 +75,27 @@ const getUnlistedBlogs = async(id)=>{
     .selectFrom('blog')
     .select(['title', 'content', 'author_id', 'status'])
     .where('author_id','=',id)
-    .where('status','=','unlisted')
-    .where('status','=','published')
+    .where('status','=','unlisted')  
+    //.where('status','=','published') //why two checks for status
     .execute();
 }
 
+const getBlogByStatus = async(id, status)=>{
+    return await db
+    .selectFrom('blog')
+    .select(['title','content','created_at','author_id','status'])
+    .where('author_id','=',id)
+    .where('status', '=', status)
+    .executeTakeFirst();
+}
+
+const getPublishedBlogs = async()=>{
+    return await db
+    .selectFrom('blog')
+    .select(['title','content','created_at','author_id','status'])
+    .where('status','=', 'published')
+    .execute();
+}
 const deleteBlog = async(id, blogId)=>{
     return await db
     .deleteFrom('blog')
@@ -126,5 +142,7 @@ export default {
     getUnlistedBlogs,
     deleteBlog,
     unlistBlog,
-    saveAndPublish
+    saveAndPublish,
+    getBlogByStatus,
+    getPublishedBlogs
 }

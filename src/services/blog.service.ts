@@ -2,15 +2,32 @@ import blogQuery from "../db/queries/blog/blog.query.js";
 import fs from "fs";
 import awsS3 from "../utils/awsS3.js";
 import mediaQuery from "../db/queries/blog/media.query.js";
-import { all } from "axios";
 import { ApiError } from "../utils/apiError.js";
-import { title } from "process";
 
-const get = async (authorId, blogId, status)=>{
-    
+const get = async (filter)=>{
+    const {authorId, blogId, status} = filter;
+
     if(blogId){
         return await blogQuery.getBlogById(blogId, authorId);
     }
+
+    if(authorId && status === 'draft'){
+        return await blogQuery.getBlogByStatus(authorId, status);
+    }
+
+    if(authorId && status === 'published'){
+        return await blogQuery.getBlogByStatus(authorId, status);
+    }
+
+    if(authorId && status === 'unlisted'){
+        return await blogQuery.getBlogByStatus(authorId, status);
+    }
+
+    if(!authorId && status === 'published'){
+        return await blogQuery.getPublishedBlogs();
+    }
+
+    return [];
 }
 
 const createBlog = async(id)=>{
@@ -156,6 +173,14 @@ const saveAndPublish = async(id, blogId, title, content, status)=>{
     return saveInDb;
 }
 
+const getAllPublishedBlogs = async()=>{
+    const blogs = await get({status: 'published'});
+
+    if(!blogs) throw new ApiError('Error while fetching the data from DB', 400);
+
+    return blogs;
+}
+
 export default {
     createBlog,
     saveChanges,
@@ -167,5 +192,6 @@ export default {
     getAllUnlisted,
     deleteBlog,
     unlistBlog,
-    saveAndPublish
+    saveAndPublish,
+    getAllPublishedBlogs
 }
