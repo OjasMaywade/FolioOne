@@ -8,7 +8,11 @@ const get = async (filter)=>{
     const {authorId, blogId, status} = filter;
 
     if(blogId){
+        if(authorId){
         return await blogQuery.getBlogById(blogId, authorId);
+        }else {
+            return await blogQuery.getBlog(blogId);
+        }
     }
 
     if(authorId && status === 'draft'){
@@ -181,6 +185,14 @@ const getAllPublishedBlogs = async()=>{
     return blogs;
 }
 
+const getBlog = async(blogId)=>{
+    const blog = await get({blogId});
+
+    if(!blog) throw new ApiError('Error while fetching the blog from DB', 400);
+
+    return blog;
+}
+
 export default {
     createBlog,
     saveChanges,
@@ -193,5 +205,6 @@ export default {
     deleteBlog,
     unlistBlog,
     saveAndPublish,
-    getAllPublishedBlogs
+    getAllPublishedBlogs,
+    getBlog
 }

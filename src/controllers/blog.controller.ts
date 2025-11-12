@@ -168,6 +168,17 @@ const getAllPublishedBlogs = asyncHandler(async(req, res)=>{
 
 })
 
+// this will be deprecated for public route as we will shift from id to title, or other unique thing
+const getBlog = asyncHandler(async(req, res)=>{
+    const {id} = req.params;
+
+    if(!id) throw new ApiError('Blog ID is required to fetch the blog', 400);
+
+    const blog = await blogService.getBlog(id);
+
+    res.json(new ApiResponse(200, 'Blog with Id fetched successfully', blog));
+})
+
 export default {
     createBlog,
     saveChanges,
@@ -181,5 +192,6 @@ export default {
     editBlog,
     unlistBlog,
     saveAndPublish,
-    getAllPublishedBlogs
+    getAllPublishedBlogs,
+    getBlog
 }

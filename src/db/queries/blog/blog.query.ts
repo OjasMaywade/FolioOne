@@ -1,4 +1,3 @@
-import { title } from "process";
 import { db } from "../../index.db.js";
 
 const createBlog = async(id)=>{
@@ -131,6 +130,15 @@ const saveAndPublish = async(id, blogId, title, content)=>{
     .execute()
 }
 
+const getBlog = async(blogId)=>{
+    return await db
+    .selectFrom('blog')
+    .select(['title','content','author_id','created_at'])
+    .where('id','=',blogId)
+    .where('status','=','published')
+    .executeTakeFirst();
+}
+
 export default {
     createBlog,
     saveBlog,
@@ -144,5 +152,6 @@ export default {
     unlistBlog,
     saveAndPublish,
     getBlogByStatus,
-    getPublishedBlogs
+    getPublishedBlogs,
+    getBlog
 }

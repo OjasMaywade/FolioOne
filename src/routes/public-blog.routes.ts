@@ -5,7 +5,7 @@ const router = Router();
 
 router.route('/').get(blogController.getAllPublishedBlogs) // get all the published blogs
 
-router.route('/:id').get(blogController.getBlogById) //get blog by id
+router.route('/:id').get(blogController.getBlog) //get blog by id
 
 router.route('/?').get() //get blog by title, content, tags, category, etc
 
