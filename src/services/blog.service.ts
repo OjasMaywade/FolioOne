@@ -193,6 +193,10 @@ const getBlog = async(blogId)=>{
     return blog;
 }
 
+const search = async(searchParams)=>{
+    console.log(searchParams);
+}
+
 export default {
     createBlog,
     saveChanges,
@@ -206,5 +210,6 @@ export default {
     unlistBlog,
     saveAndPublish,
     getAllPublishedBlogs,
-    getBlog
+    getBlog,
+    search
 }

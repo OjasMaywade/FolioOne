@@ -179,6 +179,15 @@ const getBlog = asyncHandler(async(req, res)=>{
     res.json(new ApiResponse(200, 'Blog with Id fetched successfully', blog));
 })
 
+const search = asyncHandler(async(req, res)=>{
+    const searchParam = req.query.q;
+
+    if(!searchParam) throw new ApiError('Cannot get result without the params', 400);
+
+    const result = await blogService.search(searchParam);
+
+})
+
 export default {
     createBlog,
     saveChanges,
@@ -193,5 +202,6 @@ export default {
     unlistBlog,
     saveAndPublish,
     getAllPublishedBlogs,
-    getBlog
+    getBlog,
+    search
 }

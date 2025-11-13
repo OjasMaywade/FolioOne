@@ -139,6 +139,12 @@ const getBlog = async(blogId)=>{
     .executeTakeFirst();
 }
 
+const search = async(searchparams)=>{
+    return await db
+    .selectFrom('blog')
+    .select(['title', 'content', 'created_at','author_id'])
+    .where('')
+}
 export default {
     createBlog,
     saveBlog,
@@ -153,5 +159,6 @@ export default {
     saveAndPublish,
     getBlogByStatus,
     getPublishedBlogs,
-    getBlog
+    getBlog,
+    search
 }
