@@ -197,6 +197,14 @@ const search = async(searchParams)=>{
     console.log(searchParams);
 }
 
+const blogBookmark = async(id, userId)=>{
+    const bookmarked = await blogQuery.bookmark(id, userId);
+
+    if(!bookmarked) throw new ApiError('Unable to bookmark the blog',400);
+
+    return bookmarked;
+}
+
 export default {
     createBlog,
     saveChanges,
@@ -211,5 +219,6 @@ export default {
     saveAndPublish,
     getAllPublishedBlogs,
     getBlog,
-    search
+    search,
+    blogBookmark
 }

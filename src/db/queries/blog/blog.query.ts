@@ -143,7 +143,17 @@ const search = async(searchparams)=>{
     return await db
     .selectFrom('blog')
     .select(['title', 'content', 'created_at','author_id'])
-    .where('')
+    
+}
+
+const bookmark = async(id, userId)=>{
+    return await db
+    .insertInto('bookmark')
+    .values({
+        user_id: userId,
+        blog_id: id,
+    })
+    .executeTakeFirst()
 }
 export default {
     createBlog,
@@ -160,5 +170,6 @@ export default {
     getBlogByStatus,
     getPublishedBlogs,
     getBlog,
-    search
+    search,
+    bookmark
 }

@@ -19,6 +19,13 @@ export interface Blog {
   updated_at: Generated<Date | null>;
 }
 
+export interface BlogLikes {
+  blog_id: number;
+  created_at: Generated<Date | null>;
+  id: Generated<number>;
+  user_id: number;
+}
+
 export interface BlogMedia {
   alt_text: string | null;
   blog_id: number;
@@ -30,22 +37,28 @@ export interface BlogMedia {
 }
 
 export interface Bookmark {
-  blogId: number;
+  blog_id: number;
   created_at: Generated<Date | null>;
   id: Generated<number>;
-  isBookmarked: number;
-  updated_at: Generated<Date | null>;
-  userId: number;
+  user_id: number;
 }
 
 export interface Comment {
-  blogId: number;
+  blog_id: number;
   comment: string;
   created_at: Generated<Date | null>;
   id: Generated<number>;
-  parentComment: number | null;
+  parent_comment: number | null;
+  status: "deleted" | "edited" | null;
   updated_at: Generated<Date | null>;
-  userId: number;
+  user_id: number;
+}
+
+export interface CommentLikes {
+  comment_id: number;
+  created_at: Generated<Date | null>;
+  id: Generated<number>;
+  user_id: number;
 }
 
 export interface Finance {
@@ -60,14 +73,13 @@ export interface Finance {
   userId: number;
 }
 
-export interface Likes {
-  blogId: number;
-  commentId: number;
+export interface Subscribers {
+  author_id: number;
   created_at: Generated<Date | null>;
   id: Generated<number>;
-  isliked: number;
+  notification_enableed: Generated<number>;
+  subscriber_id: number;
   updated_at: Generated<Date | null>;
-  userId: number;
 }
 
 export interface Todo {
@@ -101,11 +113,13 @@ export interface User {
 
 export interface DB {
   blog: Blog;
+  blog_likes: BlogLikes;
   blog_media: BlogMedia;
   bookmark: Bookmark;
   comment: Comment;
+  comment_likes: CommentLikes;
   finance: Finance;
-  likes: Likes;
+  subscribers: Subscribers;
   todo: Todo;
   user: User;
 }

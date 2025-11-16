@@ -188,6 +188,19 @@ const search = asyncHandler(async(req, res)=>{
 
 })
 
+const bookmark = asyncHandler(async(req, res)=>{
+    const userId = req.user.id;
+    const {id} = req.params;
+
+    if(!id) throw new ApiError('Blog ID is required',400);
+
+    const bookmark = await blogService.blogBookmark(id, userId);
+
+    if(!bookmark) throw new ApiError('Blog not bookmarked, try again', 400);
+
+    res.json(new ApiResponse(200, 'Blog bookmarked successfully', bookmark));
+})
+
 export default {
     createBlog,
     saveChanges,
@@ -203,5 +216,6 @@ export default {
     saveAndPublish,
     getAllPublishedBlogs,
     getBlog,
-    search
+    search,
+    bookmark
 }
