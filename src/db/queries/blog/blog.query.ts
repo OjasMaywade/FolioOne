@@ -155,6 +155,16 @@ const bookmark = async(id, userId)=>{
     })
     .executeTakeFirst()
 }
+
+const likeBlog = async(id, userId)=>{
+    return await db
+    .insertInto('blog_likes')
+    .values({
+        blog_id: id,
+        user_id: userId
+    })
+    .executeTakeFirst()
+} 
 export default {
     createBlog,
     saveBlog,
@@ -171,5 +181,6 @@ export default {
     getPublishedBlogs,
     getBlog,
     search,
-    bookmark
+    bookmark,
+    likeBlog
 }

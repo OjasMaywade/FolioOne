@@ -12,9 +12,9 @@ router.route('/:id').get(blogController.getBlog) //get blog by id
 
 router.route('/:id/bookmark').post(auth, blogController.bookmark)
 
-/*router.route('/:id/like').post(auth, blogController.)
+router.route('/:id/like').post(auth, blogController.likeBlog)
 
-router.route('/:id/comment').post(auth, blogController);
+/*router.route('/:id/comment').post(auth, blogController);
 
 router.route('/comment/:id/like').post(auth, blogController);*/
 

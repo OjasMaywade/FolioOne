@@ -205,6 +205,16 @@ const blogBookmark = async(id, userId)=>{
     return bookmarked;
 }
 
+const likeBlog = async(id, userId)=>{
+    const liked = await blogQuery.likeBlog(id, userId);
+
+    console.log(liked);
+
+    if(!liked) throw new ApiError('Error while adding a like in db', 400)
+
+    return liked;
+}
+
 export default {
     createBlog,
     saveChanges,
@@ -220,5 +230,6 @@ export default {
     getAllPublishedBlogs,
     getBlog,
     search,
-    blogBookmark
+    blogBookmark,
+    likeBlog
 }

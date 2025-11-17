@@ -201,6 +201,18 @@ const bookmark = asyncHandler(async(req, res)=>{
     res.json(new ApiResponse(200, 'Blog bookmarked successfully', bookmark));
 })
 
+const likeBlog = asyncHandler(async(req, res)=>{
+    const userId = req.user.id;
+    const {id} = req.params;
+
+    if(!id) throw new ApiError('Blog ID is required',400);
+
+    const like = await blogService.likeBlog(id, userId);
+
+    res.json(new ApiResponse(200, 'User liked the blog successfully', like))
+
+})
+
 export default {
     createBlog,
     saveChanges,
@@ -217,5 +229,6 @@ export default {
     getAllPublishedBlogs,
     getBlog,
     search,
-    bookmark
+    bookmark,
+    likeBlog
 }
