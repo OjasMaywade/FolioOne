@@ -224,6 +224,14 @@ const comment = async(id, userId, comment)=>{
     return comment;
 }
 
+const likeComment = async(commentId, userId)=>{
+    const like = await blogQuery.likeComment(commentId, userId);
+
+    if(!like) throw new ApiError('Error while saving user like info in db', 400);
+
+    return like;
+}
+
 export default {
     createBlog,
     saveChanges,
@@ -241,5 +249,6 @@ export default {
     search,
     blogBookmark,
     likeBlog,
-    comment
+    comment,
+    likeComment
 }

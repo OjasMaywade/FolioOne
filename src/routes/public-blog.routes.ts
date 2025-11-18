@@ -10,14 +10,31 @@ router.route('/search').get(blogController.search) //get blog by title, content,
 
 router.route('/:id').get(blogController.getBlog) //get blog by id
 
-router.route('/:id/bookmark').post(auth, blogController.bookmark);
+router.route('/:id/bookmark')
+    .post(auth, blogController.bookmark)
+    //.delete(auth, blogController) //- remove the bookmark
 
-router.route('/:id/like').post(auth, blogController.likeBlog);
+router.route('/:id/like')
+    .post(auth, blogController.likeBlog)
+    //.delete(auth, blogController) //- remove the like
 
-router.route('/:id/comment').post(auth, blogController.comment);
+router.route('/:id/comment')
+    .post(auth, blogController.comment)
+    //.delete(auth, blogController)
+    //.patch(auth, blogController);
+
+router.route('/comment/:id/like').post(auth, blogController.likeComment);
+
+/*
+router.route('/:id/comment').delete(auth, blogController);
+router.route('/:id/comment').patch(auth, blogController);
+
+router.route('/:id/like').delete(auth, blogController) - remove the like
+
+router.route('/:id/bookmark').delete(auth, blogController) - remove the bookmark
 
 
-// router.route('/comment/:id/like').post(auth, blogController);*/
+*/
 
 /*
 POST /api/blogs/:id/bookmark - bookmark a blog

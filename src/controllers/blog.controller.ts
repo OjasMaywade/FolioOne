@@ -230,6 +230,20 @@ const comment = asyncHandler(async(req, res)=>{
     res.json(new ApiResponse(200, 'Commnt posted Successfully', comment));
 })
 
+const likeComment = asyncHandler(async(req, res)=>{
+    const commentId = req.params.id;
+    const userId = req.user.id;
+
+    if(!commentId) throw new ApiError('Comment ID is required', 400);
+
+    const likeComment = await blogService.likeComment(commentId, userId);
+
+    if(!likeComment) throw new ApiError('Internl error faced while processing your request to like the comment, try again', 400);
+    
+    res.json(new ApiResponse(200, 'Comment liked Successfully', likeComment))
+
+})
+
 export default {
     createBlog,
     saveChanges,
@@ -248,5 +262,6 @@ export default {
     search,
     bookmark,
     likeBlog,
-    comment
+    comment,
+    likeComment
 }
