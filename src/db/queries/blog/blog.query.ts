@@ -164,7 +164,18 @@ const likeBlog = async(id, userId)=>{
         user_id: userId
     })
     .executeTakeFirst()
-} 
+}
+
+const blogComment = async(id, userId, comment)=>{
+    return await db
+    .insertInto('comment')
+    .values({
+        comment: comment,
+        user_id: userId,
+        blog_id: id
+    })
+    .executeTakeFirst()
+}
 export default {
     createBlog,
     saveBlog,
@@ -182,5 +193,6 @@ export default {
     getBlog,
     search,
     bookmark,
-    likeBlog
+    likeBlog,
+    blogComment
 }

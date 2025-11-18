@@ -3,6 +3,7 @@ import fs from "fs";
 import awsS3 from "../utils/awsS3.js";
 import mediaQuery from "../db/queries/blog/media.query.js";
 import { ApiError } from "../utils/apiError.js";
+import { id } from "zod/v4/locales";
 
 const get = async (filter)=>{
     const {authorId, blogId, status} = filter;
@@ -215,6 +216,14 @@ const likeBlog = async(id, userId)=>{
     return liked;
 }
 
+const comment = async(id, userId, comment)=>{
+    const saveComment = await blogQuery.blogComment(id, userId, comment);
+
+    if(!comment) throw new ApiError('Error while saving comment in db',400);
+
+    return comment;
+}
+
 export default {
     createBlog,
     saveChanges,
@@ -231,5 +240,6 @@ export default {
     getBlog,
     search,
     blogBookmark,
-    likeBlog
+    likeBlog,
+    comment
 }

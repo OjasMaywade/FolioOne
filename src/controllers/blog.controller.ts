@@ -1,3 +1,4 @@
+import { app } from "../app.js";
 import blogService from "../services/blog.service.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
@@ -213,6 +214,22 @@ const likeBlog = asyncHandler(async(req, res)=>{
 
 })
 
+const comment = asyncHandler(async(req, res)=>{
+    const {comment} = req.body;
+    const {id} = req.params;
+    const userId = req.user.id;
+
+    if(!comment) throw new ApiError('User Comment input is required', 400);
+
+    if(!id) throw new ApiError('Blog ID is required',400);
+
+    const blogComment = await blogService.comment(id, userId, comment);
+
+    if(!blogComment) throw new ApiError('error whiling processing your request to post a comment', 400);
+
+    res.json(new ApiResponse(200, 'Commnt posted Successfully', comment));
+})
+
 export default {
     createBlog,
     saveChanges,
@@ -230,5 +247,6 @@ export default {
     getBlog,
     search,
     bookmark,
-    likeBlog
+    likeBlog,
+    comment
 }

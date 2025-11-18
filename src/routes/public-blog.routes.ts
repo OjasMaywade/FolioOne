@@ -10,13 +10,14 @@ router.route('/search').get(blogController.search) //get blog by title, content,
 
 router.route('/:id').get(blogController.getBlog) //get blog by id
 
-router.route('/:id/bookmark').post(auth, blogController.bookmark)
+router.route('/:id/bookmark').post(auth, blogController.bookmark);
 
-router.route('/:id/like').post(auth, blogController.likeBlog)
+router.route('/:id/like').post(auth, blogController.likeBlog);
 
-/*router.route('/:id/comment').post(auth, blogController);
+router.route('/:id/comment').post(auth, blogController.comment);
 
-router.route('/comment/:id/like').post(auth, blogController);*/
+
+// router.route('/comment/:id/like').post(auth, blogController);*/
 
 /*
 POST /api/blogs/:id/bookmark - bookmark a blog
