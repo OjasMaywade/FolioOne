@@ -186,6 +186,15 @@ const likeComment = async(commentId, userId)=>{
     })
     .executeTakeFirst();
 }
+
+const getComment = async(blogId)=>{
+    return await db
+    .selectFrom('comment')
+    .select(['comment','parent_comment','id'])
+    .where('blog_id','=',blogId)
+    .executeTakeFirst();
+}
+
 export default {
     createBlog,
     saveBlog,
@@ -205,5 +214,6 @@ export default {
     bookmark,
     likeBlog,
     blogComment,
-    likeComment
+    likeComment,
+    getComment
 }

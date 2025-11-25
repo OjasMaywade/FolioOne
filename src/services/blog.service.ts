@@ -232,6 +232,14 @@ const likeComment = async(commentId, userId)=>{
     return like;
 }
 
+const getComment = async(userId, blogId)=>{
+    const comments = await blogQuery.getComment(blogId);
+
+    if(!comments) throw new ApiError('Error while getting all the comments for the blog', 400);
+
+    return comments;
+}
+
 export default {
     createBlog,
     saveChanges,
@@ -250,5 +258,6 @@ export default {
     blogBookmark,
     likeBlog,
     comment,
-    likeComment
+    likeComment,
+    getComment
 }

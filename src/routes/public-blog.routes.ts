@@ -18,12 +18,16 @@ router.route('/:id/like')
     .post(auth, blogController.likeBlog)
     //.delete(auth, blogController) //- remove the like
 
-router.route('/:id/comment')
+router.route('/:id/comments')
+    .get(auth, blogController.getComment)
     .post(auth, blogController.comment)
     //.delete(auth, blogController)
     //.patch(auth, blogController);
 
-router.route('/comment/:id/like').post(auth, blogController.likeComment);
+
+router.route('/comment/:id/like')
+    .post(auth, blogController.likeComment);
+    // .delete(auth, blogController)
 
 /*
 router.route('/:id/comment').delete(auth, blogController);
