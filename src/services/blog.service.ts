@@ -206,6 +206,14 @@ const blogBookmark = async(id, userId)=>{
     return bookmarked;
 }
 
+const removeBookmark = async(userId, blogId)=>{
+    const remove = await blogQuery.removeBookmark(userId, blogId);
+
+    if(!remove.numDeletedRows) throw new ApiError('Error While removing the Bookmark', 400);
+
+    return remove;
+}
+
 const likeBlog = async(id, userId)=>{
     const liked = await blogQuery.likeBlog(id, userId);
 
@@ -218,8 +226,6 @@ const likeBlog = async(id, userId)=>{
 
 const removeLike = async(userId, blogId)=>{
     const remove = await blogQuery.removeLike(userId, blogId);
-
-    console.log(remove, remove.numDeletedRows, !remove.numDeletedRows)
 
     if(!remove.numDeletedRows) throw new ApiError('error while removing like from blog', 400);
 
@@ -266,6 +272,7 @@ export default {
     getBlog,
     search,
     blogBookmark,
+    removeBookmark,
     likeBlog,
     removeLike,
     comment,

@@ -202,6 +202,17 @@ const bookmark = asyncHandler(async(req, res)=>{
     res.json(new ApiResponse(200, 'Blog bookmarked successfully', bookmark));
 })
 
+const removeBookmark = asyncHandler(async(req, res)=>{
+    const userId = req.user.id;
+    const blogId = req.params.id;
+
+    if(!blogId) throw new ApiError('Blog ID is required',400);
+
+    const removed = await blogService.removeBookmark(userId, blogId);
+
+    res.json(new ApiResponse(204, 'User Liked Removed Successfully', removed))
+})
+
 const likeBlog = asyncHandler(async(req, res)=>{
     const userId = req.user.id;
     const {id} = req.params;
@@ -282,6 +293,7 @@ export default {
     getBlog,
     search,
     bookmark,
+    removeBookmark,
     likeBlog,
     removeLike,
     comment,

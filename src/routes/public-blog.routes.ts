@@ -12,7 +12,7 @@ router.route('/:id').get(blogController.getBlog) //get blog by id
 
 router.route('/:id/bookmark')
     .post(auth, blogController.bookmark)
-    // .delete(auth, blogController) //- remove the bookmark
+    .delete(auth, blogController.removeBookmark) //- remove the bookmark
 
 router.route('/:id/like')
     .post(auth, blogController.likeBlog)

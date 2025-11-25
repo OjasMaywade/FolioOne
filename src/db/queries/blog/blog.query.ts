@@ -156,6 +156,14 @@ const bookmark = async(id, userId)=>{
     .executeTakeFirst()
 }
 
+const removeBookmark = async(userId, blogId)=>{
+    return await db
+    .deleteFrom('bookmark')
+    .where('blog_id','=',blogId)
+    .where('user_id','=',userId)
+    .executeTakeFirst();
+}
+
 const likeBlog = async(id, userId)=>{
     return await db
     .insertInto('blog_likes')
@@ -220,6 +228,7 @@ export default {
     getBlog,
     search,
     bookmark,
+    removeBookmark,
     likeBlog,
     removeLike,
     blogComment,
