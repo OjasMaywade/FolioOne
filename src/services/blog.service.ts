@@ -216,6 +216,16 @@ const likeBlog = async(id, userId)=>{
     return liked;
 }
 
+const removeLike = async(userId, blogId)=>{
+    const remove = await blogQuery.removeLike(userId, blogId);
+
+    console.log(remove, remove.numDeletedRows, !remove.numDeletedRows)
+
+    if(!remove.numDeletedRows) throw new ApiError('error while removing like from blog', 400);
+
+    return removeLike;
+}
+
 const comment = async(id, userId, comment)=>{
     const saveComment = await blogQuery.blogComment(id, userId, comment);
 
@@ -257,6 +267,7 @@ export default {
     search,
     blogBookmark,
     likeBlog,
+    removeLike,
     comment,
     likeComment,
     getComment

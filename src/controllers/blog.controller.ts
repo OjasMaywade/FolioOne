@@ -214,6 +214,17 @@ const likeBlog = asyncHandler(async(req, res)=>{
 
 })
 
+const removeLike = asyncHandler(async(req, res)=>{
+    const userId = req.user.id;
+    const blogId = req.params.id;
+
+    if(!blogId) throw new ApiError('Blog ID is required',400);
+
+    const removed = await blogService.removeLike(userId, blogId);
+
+    res.json(new ApiResponse(204, 'User Liked Removed Successfully', removed))
+})
+
 const comment = asyncHandler(async(req, res)=>{
     const {comment} = req.body;
     const {id} = req.params;
@@ -247,11 +258,11 @@ const getComment = asyncHandler(async(req, res)=>{
     const userId = req.user.id;
     const blogId = req.params.id;
 
-    if(!blogId) throw new ApiError('Comment ID is required', 400);
+    if(!blogId) throw new ApiError('Blog ID is required', 400);
 
     const comment = await blogService.getComment(userId, blogId);
 
-    res.json(new ApiResponse(200, 'Comment data successfully returned', comment))
+    res.json(new ApiResponse(200, 'Comment data successfully returned', comment));
 })
 
 export default {
@@ -272,6 +283,7 @@ export default {
     search,
     bookmark,
     likeBlog,
+    removeLike,
     comment,
     likeComment,
     getComment

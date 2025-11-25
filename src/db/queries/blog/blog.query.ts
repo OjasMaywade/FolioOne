@@ -166,6 +166,14 @@ const likeBlog = async(id, userId)=>{
     .executeTakeFirst()
 }
 
+const removeLike = async(userId, blogId)=>{
+    return await db
+    .deleteFrom('blog_likes')
+    .where('blog_id','=',blogId)
+    .where('user_id','=',userId)
+    .executeTakeFirst();
+}
+
 const blogComment = async(id, userId, comment)=>{
     return await db
     .insertInto('comment')
@@ -192,7 +200,7 @@ const getComment = async(blogId)=>{
     .selectFrom('comment')
     .select(['comment','parent_comment','id'])
     .where('blog_id','=',blogId)
-    .executeTakeFirst();
+    .execute();
 }
 
 export default {
@@ -213,6 +221,7 @@ export default {
     search,
     bookmark,
     likeBlog,
+    removeLike,
     blogComment,
     likeComment,
     getComment

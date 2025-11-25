@@ -12,20 +12,21 @@ router.route('/:id').get(blogController.getBlog) //get blog by id
 
 router.route('/:id/bookmark')
     .post(auth, blogController.bookmark)
-    //.delete(auth, blogController) //- remove the bookmark
+    // .delete(auth, blogController) //- remove the bookmark
 
 router.route('/:id/like')
     .post(auth, blogController.likeBlog)
-    //.delete(auth, blogController) //- remove the like
+    .delete(auth, blogController.removeLike) //- remove the like
 
 router.route('/:id/comments')
     .get(auth, blogController.getComment)
     .post(auth, blogController.comment)
-    //.delete(auth, blogController)
-    //.patch(auth, blogController);
 
+router.route('/comments/:id')
+    // .put(auth, blogController)
+    // .delete(auth, blogController)
 
-router.route('/comment/:id/like')
+router.route('/comments/:id/like')
     .post(auth, blogController.likeComment);
     // .delete(auth, blogController)
 
