@@ -193,6 +193,17 @@ const blogComment = async(id, userId, comment)=>{
     .executeTakeFirst()
 }
 
+const editComment = async(userId, commentId, comment)=>{
+    return await db
+    .updateTable('comment')
+    .set({
+        comment: comment
+    })
+    .where('id','=',commentId)
+    .where('user_id','=',userId)
+    .executeTakeFirst();
+}
+
 const likeComment = async(commentId, userId)=>{
     return await db
     .insertInto('comment_likes')
@@ -240,6 +251,7 @@ export default {
     likeBlog,
     removeLike,
     blogComment,
+    editComment,
     likeComment,
     removeCommentLike,
     getComment

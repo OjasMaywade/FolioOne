@@ -252,6 +252,20 @@ const comment = asyncHandler(async(req, res)=>{
     res.json(new ApiResponse(200, 'Commnt posted Successfully', comment));
 })
 
+const editComment = asyncHandler(async(req, res)=>{
+    const {comment} = req.body;
+    const userId = req.user.id;
+    const commentId = req.params.id;
+
+    if(!comment) throw new ApiError('Updated Comment is required', 406);
+
+    if(!commentId) throw new ApiError('Comment Id is required, cannot proceed without it', 406);
+
+    const edited = await blogService.editComment(userId, commentId, comment);
+
+    res.json(new ApiResponse(200, 'Comment edited successfully', edited))
+})
+
 const likeComment = asyncHandler(async(req, res)=>{
     const commentId = req.params.id;
     const userId = req.user.id;
@@ -307,6 +321,7 @@ export default {
     likeBlog,
     removeLike,
     comment,
+    editComment,
     likeComment,
     removeCommentLike,
     getComment

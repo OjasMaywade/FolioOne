@@ -23,7 +23,7 @@ router.route('/:id/comments')
     .post(auth, blogController.comment)
 
 router.route('/comments/:id')
-    // .put(auth, blogController)
+    .patch(auth, blogController.editComment)
     // .delete(auth, blogController)
 
 router.route('/comments/:id/like')

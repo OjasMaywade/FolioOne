@@ -240,6 +240,14 @@ const comment = async(id, userId, comment)=>{
     return comment;
 }
 
+const editComment = async(userId, commentId, comment)=>{
+    const edit = await blogQuery.editComment(userId, commentId, comment);
+
+    if(!edit.numChangedRows) throw new ApiError('Error while editing the comment', 400);
+
+    return edit;
+}
+
 const likeComment = async(commentId, userId)=>{
     const like = await blogQuery.likeComment(commentId, userId);
 
@@ -284,6 +292,7 @@ export default {
     likeBlog,
     removeLike,
     comment,
+    editComment,
     likeComment,
     removeCommentLike,
     getComment
