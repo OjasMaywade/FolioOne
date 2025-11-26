@@ -27,8 +27,8 @@ router.route('/comments/:id')
     // .delete(auth, blogController)
 
 router.route('/comments/:id/like')
-    .post(auth, blogController.likeComment);
-    // .delete(auth, blogController)
+    .post(auth, blogController.likeComment)
+    .delete(auth, blogController.removeCommentLike);
 
 /*
 router.route('/:id/comment').delete(auth, blogController);

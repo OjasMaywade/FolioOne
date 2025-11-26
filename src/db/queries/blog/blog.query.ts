@@ -203,6 +203,14 @@ const likeComment = async(commentId, userId)=>{
     .executeTakeFirst();
 }
 
+const removeCommentLike = async(userId, commentId)=>{
+    return await db
+    .deleteFrom('comment_likes')
+    .where('comment_id','=',commentId)
+    .where('user_id','=',userId)
+    .executeTakeFirst()
+}
+
 const getComment = async(blogId)=>{
     return await db
     .selectFrom('comment')
@@ -233,5 +241,6 @@ export default {
     removeLike,
     blogComment,
     likeComment,
+    removeCommentLike,
     getComment
 }
