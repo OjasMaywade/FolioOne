@@ -24,11 +24,17 @@ router.route('/:id/comments')
 
 router.route('/comments/:id')
     .patch(auth, blogController.editComment)
-    // .delete(auth, blogController)
+    .delete(auth, blogController.deleteComment)
 
 router.route('/comments/:id/like')
     .post(auth, blogController.likeComment)
     .delete(auth, blogController.removeCommentLike);
+
+/*
+20. /api/v1/blogs/explore-topic - return all the topics like: life, self-improvement, etc with sub-topics and also allow to search a tag/topic and this will get them to /api/v1/blogs/tag/topics(career, etc) route.
+21. /api/v1/blogs/tag/topics(career, etc) - return all the blogs under this category/tag
+22. /api/v1/blogs/tag/topics(career, etc) - add a option to follow the tag/topics/category
+*/
 
 /*
 router.route('/:id/comment').delete(auth, blogController);

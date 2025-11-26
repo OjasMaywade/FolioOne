@@ -248,6 +248,14 @@ const editComment = async(userId, commentId, comment)=>{
     return edit;
 }
 
+const deleteComment = async(userId, commentId)=>{
+    const deleted = await blogQuery.deleteComment(userId, commentId);
+
+    if(!deleted.numChangedRows) throw new ApiError('Error while deleting the comment', 400);
+
+    return deleted;
+}
+
 const likeComment = async(commentId, userId)=>{
     const like = await blogQuery.likeComment(commentId, userId);
 
@@ -293,6 +301,7 @@ export default {
     removeLike,
     comment,
     editComment,
+    deleteComment,
     likeComment,
     removeCommentLike,
     getComment

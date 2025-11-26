@@ -197,11 +197,23 @@ const editComment = async(userId, commentId, comment)=>{
     return await db
     .updateTable('comment')
     .set({
-        comment: comment
+        comment: comment,
+        status: "edited"
     })
     .where('id','=',commentId)
     .where('user_id','=',userId)
     .executeTakeFirst();
+}
+
+const deleteComment = async(userId, commentId)=>{
+    return await db
+    .updateTable('comment')
+    .set({
+        status: "deleted"
+    })
+    .where('id','=',commentId)
+    .where('user_id','=',userId)
+    .executeTakeFirst()
 }
 
 const likeComment = async(commentId, userId)=>{
@@ -252,6 +264,7 @@ export default {
     removeLike,
     blogComment,
     editComment,
+    deleteComment,
     likeComment,
     removeCommentLike,
     getComment
