@@ -8,6 +8,10 @@ router.route('/').get(blogController.getAllPublishedBlogs) // get all the publis
 
 router.route('/search').get(blogController.search) //get blog by title, content, tags, category, etc
 
+router.route('/explore-topic').get();
+
+router.route('/tag/:tag').get(); //check can we pass alphabets/string in :tag through params
+
 router.route('/:id').get(blogController.getBlog) //get blog by id
 
 router.route('/:id/bookmark')

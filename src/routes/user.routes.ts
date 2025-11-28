@@ -22,7 +22,7 @@ router.route('/me').get(auth, userController.me);
 
 router.route('/updateProfilePic').patch(auth, upload.single('profilepic'), userController.updateProfilePic);
 
-router.route('/verifyEmail').post();
+router.route('/verifyEmail').post(auth, userController.verifyEmail);
 
 router.route('/forgotPassword').post();
 

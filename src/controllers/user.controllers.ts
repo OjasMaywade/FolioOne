@@ -1,6 +1,7 @@
 import userQuery from "../db/queries/user.query.js"
 import { asyncHandler } from "../utils/asyncHandler.js";
 import userService from "../services/user.service.js";
+import generateOtp from "../utils/generateOtp.js";
 
 const register = asyncHandler(async(req,res)=>{
     const userInfo = req.body;
@@ -131,6 +132,10 @@ const updateProfilePic = asyncHandler(async(req, res)=>{
     res.status(200).send(`Profile photo uploaded successfully: ${uploadProfilePicS3}`)
 })
 
+const verifyEmail = asyncHandler(async(req, res)=>{
+    console.log(generateOtp(6));
+})
+
 export default
 { 
     register, 
@@ -141,7 +146,8 @@ export default
     deleteUser,
     refreshAccessToken,
     resetPassword,
-    updateProfilePic
+    updateProfilePic,
+    verifyEmail
 }
 
  /* Register
