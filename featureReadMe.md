@@ -39,6 +39,11 @@ document all this decision in readme
 18. CRON JOB to notify subscriber of new blog publish from user
 19. POST /api/v1/blog/:id/upload - upload images added in the blog - Done
 
+20. /api/v1/blogs/explore-topic - return all the topics like: life, self-improvement, etc with sub-topics and also allow to search a tag/topic and this will get them to /api/v1/blogs/tag/topics(career, etc) route.
+21. /api/v1/blogs/tag/topics(career, etc) - return all the blogs under this category/tag
+22. /api/v1/blogs/tag/topics(career, etc) - add a option to follow the tag/topics/category
+23. 
+
 Todo
 1. GET /api/todos
 2. POST /api/todos - CreateTodo
@@ -92,10 +97,26 @@ Resume
 20. POST /api/resume/upload
 
 Github
+GET /github - Show your data, like numbers of followers, number of following, list of your personal repositories, ets - https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-a-user
+GET /github/{repo-name} - Show data about that particular project. - https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#update-a-repository
+POST /github/{repo-name}/issues - Take in the title and body, create an issue in the repo, and return the Github issue URL - https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#create-an-issue
 
+1. Controller - 
+2. db - 
+3. middlewares - 
+4. repositories - 
+5. routes - 
+6. services - 
+7. types - 
+8. utils - 
 
 
 Spotify
+
+https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks
+https://developer.spotify.com/documentation/web-api/reference/get-information-about-the-users-current-playback
+https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback
+https://developer.spotify.com/documentation/web-api/reference/pause-a-users-playback
 
 
 integrating password login with oauth login:
