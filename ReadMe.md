@@ -1,6 +1,6 @@
 # FolioOne
 
-**FolioOne** is a clean, responsive blogging website template — built to help writers, developers, and creators publish articles in a simple, organized, and distraction-free layout. It’s inspired by the original FolioOne Bootstrap design but adapted and extended to function purely as a blogging platform, focusing on readability, content structure, and ease of navigation. :contentReference[oaicite:1]{index=1}
+**FolioOne** is a clean, responsive blogging website template — built to help writers, developers, and creators publish articles in a simple, organized, and distraction-free layout. It’s inspired by the original FolioOne Bootstrap design but adapted and extended to function purely as a blogging platform, focusing on readability, content structure, and ease of navigation.
 
 ---
 
@@ -24,7 +24,6 @@
 ## About
 
 FolioOne Blog API is a backend project I built to learn, improve, and practise real-world backend architecture. It provides the core features needed for a blogging platform—managing posts, comments, and authentication—while keeping everything clean and simple under the hood. This project reflects my approach to building practical, maintainable systems as I grow as a backend developer.
-:contentReference[oaicite:2]{index=2}
 
 ---
 
