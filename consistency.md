@@ -94,3 +94,12 @@ Key Principles:
     Use Query Parameters for Filtering, Sorting, and Pagination:
     These operations should be handled through query parameters, not by creating separate endpoints.
         Example: /products?category=electronics&sort=price_asc, /users?page=2&limit=10
+
+       how to update:
+       1. ssh into serve
+       2. cd to the project folder
+       3. git pull origin
+       4. pm2 kill
+       5. npm install
+       6. tsc
+       7. pm2 start ./dist/src/index.js

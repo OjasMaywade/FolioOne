@@ -2,9 +2,12 @@ import { Router } from "express";
 import userController from "../controllers/user.controllers.js";
 import { auth } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
+import {bodyValidator} from   "../middlewares/inputValidation.middleware.js"
+import userValidator from "../validators/user.validator.js";
+
 const router = Router();
 
-router.route('/register').post(userController.register);
+router.route('/register').post(bodyValidator(userValidator.register), userController.register);
 
 router.route('/login').post(userController.login);
 

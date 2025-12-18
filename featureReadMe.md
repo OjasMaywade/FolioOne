@@ -40,6 +40,7 @@ document all this decision in readme
 19. POST /api/v1/blog/:id/upload - upload images added in the blog - Done
 
 20. /api/v1/blogs/explore-topic - return all the topics like: life, self-improvement, etc with sub-topics and also allow to search a tag/topic and this will get them to /api/v1/blogs/tag/topics(career, etc) route.
+Create a list of standard tags that will be their in tag table and displayed over explore-topic
 21. /api/v1/blogs/tag/topics(career, etc) - return all the blogs under this category/tag
 22. /api/v1/blogs/tag/topics(career, etc) - add a option to follow the tag/topics/category
 23. 
