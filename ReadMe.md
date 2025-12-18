@@ -1,6 +1,6 @@
 # FolioOne
 
-**FolioOne** is a clean, responsive blogging website template — built to help writers, developers, and creators publish articles in a simple, organized, and distraction-free layout. It’s inspired by the original FolioOne Bootstrap design but adapted and extended to function purely as a blogging platform, focusing on readability, content structure, and ease of navigation.
+**FolioOne** is a clean, responsive blogging website — built to help writers, developers, and creators publish articles in a simple, organized, and distraction-free layout. It’s inspired by the original FolioOne Bootstrap design but adapted and extended to function purely as a blogging platform, focusing on readability, content structure, and ease of navigation.
 
 ---
 
@@ -125,3 +125,4 @@ FolioOne follows a layered backend architecture:
 - **Types & Utils**
   - Shared TypeScript types/interfaces.
   - Utility helpers (e.g. slug generator, pagination helpers, error builders).
+
