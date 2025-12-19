@@ -55,16 +55,17 @@ interface User{
     bio: string
 }
 const updateProfile = asyncHandler(async(req,res)=>{
-    const {username, firstname, lastname, bio, email} = req.body;
+    const {username, firstname, lastname, email} = req.body;
     const {id} = req.user;
 
-    const updateUser = await userService.updateProfile({username, firstname, lastname, bio, email, id})
+    const updateUser = await userService.updateProfile({username, firstname, lastname, email, id})
 
     res.status(201).send(updateUser)
 
 })
 
 const me = asyncHandler(async(req,res)=>{
+    //add service logic on this controller 
         const userInfo = await userQuery.userAllInfo(req.user.id);
         
         if(!userInfo) throw new Error(`User not found with Id: ${req.user.id}`);
@@ -124,6 +125,7 @@ const resetPassword = asyncHandler(async(req, res)=>{
 })
 
 const updateProfilePic = asyncHandler(async(req, res)=>{
+    console.log(req.file);
     const {path, filename} = req.file;
     const {id} = req.res.locals.user;
 

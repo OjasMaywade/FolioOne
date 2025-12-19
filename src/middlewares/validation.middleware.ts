@@ -1,9 +1,13 @@
-import z from "zod";
-
-const bodyValidator = (schema)=>{
+const Validator = (schema, type)=>{
     return (req, res, next)=>{
+        const select = {
+            body: req.body,
+            params: req.params,
+            query: req.query,
+            file: req.file
+        }
     try {
-        const validated =  schema.parse(req.body);
+        const validated =  schema.parse(select[type]);
         req.validatedBody = validated;
         next();
     } catch (error) {
@@ -16,5 +20,5 @@ const bodyValidator = (schema)=>{
 }
 
 export  {
-    bodyValidator
+    Validator
 }

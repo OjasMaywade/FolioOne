@@ -71,12 +71,11 @@ interface User{
     username: string,
     email: string,
     firstname: string,
-    lastname: string,
-    bio: string
+    lastname: string
 }
 
-const updateProfile = async({username, firstname, lastname, bio, email, id})=>{
-    if(!(username || email || firstname || lastname || bio)){
+const updateProfile = async({username, firstname, lastname, email, id})=>{
+    if(!(username || email || firstname || lastname)){
             throw new Error(`Info is required`);
         }
         let updates = {} as User;
@@ -98,7 +97,7 @@ const updateProfile = async({username, firstname, lastname, bio, email, id})=>{
         }
         if(firstname) updates.firstname = firstname;
         if(lastname) updates.lastname = lastname;
-        if(bio) updates.bio = bio;
+        // if(bio) updates.bio = bio;
     
         const updateUser = await userQuery.updateUserInfo(updates,id);
     
