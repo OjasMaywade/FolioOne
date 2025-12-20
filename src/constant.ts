@@ -1,3 +1,6 @@
-const dbName: string = "todos";
+const options = {
+        httpOnly: true,
+        secure: true
+    }
 
-export default {dbName};
+export default options

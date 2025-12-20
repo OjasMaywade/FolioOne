@@ -8,7 +8,7 @@ const Validator = (schema, type)=>{
         }
     try {
         const validated =  schema.parse(select[type]);
-        req.validatedBody = validated;
+        req.validated = validated;
         next();
     } catch (error) {
             res.status(400).json({

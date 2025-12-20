@@ -1,10 +1,7 @@
 import {z} from "zod";
 
-const maxFileSize = 5*1024*1024;
-const acceptedMimeTypes = ['image/jpeg', 'image/png'];
-
 const register = z.object({
-    firstname: z.string().min(2,{message: "first Name Must be 2 or more characters Long"}).max(30, {message: "first Name Must be less than 30 characters Long"}),
+    firstname: z.string().trim().min(2,{message: "first Name Must be 2 or more characters Long"}).max(30, {message: "first Name Must be less than 30 characters Long"}),
     lastname: z.string().min(2,{message: "last Name Must be 2 or more characters long"}).max(30, {message: "last Name Must be less than 30 characters Long"}),
     username: z.string().min(3).max(30),
     email: z.string().email({message: "invalid email structure"}),

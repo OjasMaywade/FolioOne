@@ -103,3 +103,37 @@ Key Principles:
        5. npm install
        6. tsc
        7. pm2 start ./dist/src/index.js
+
+
+
+       
+/* Register
+    1. User click on sign-up
+    2. user given option to create profile with details like username, email, password, etc (include info necessary for login)
+    3. this info will be send through body
+    4. take the info from body into variables
+    5. search the db with given details to find existing user
+    6. if not found then create the user
+    7. and store the data in db
+    8. send back the necessary info back to user    
+    */
+
+/* Login:
+1. user send email/username and password through header or body
+2. we will verify the username/email and password
+3. then if the user is available and password is correct then generate a access and refresh token
+4. save the refresh token in db
+5. send the access and refresh t
+ through cookies
+*/
+
+/* updateProfile
+    1. here useR can update his/
+    profile info like: email, bio, username, first and last name 
+    2. then check for the update
+    de the user
+    3. and make update in db 
+    4. return the changes and de
+    s with success message
+
+*/

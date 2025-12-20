@@ -2,32 +2,31 @@ import userQuery from "../db/queries/user.query.js"
 import { asyncHandler } from "../utils/asyncHandler.js";
 import userService from "../services/user.service.js";
 import generateOtp from "../utils/generateOtp.js";
+import { ApiResponse } from "../utils/apiResponse.js";
+import options from "../constant.js";
 
 const register = asyncHandler(async(req,res)=>{
-    const userInfo = req.body;
+    const userInfo = req.validated;
     
     const registerUser = await userService.register(userInfo);
   
     if(!registerUser) throw new Error (`Error While registering User`)
 
-    res.status(201).send('User Registered Successfully')
+// Can pass user registration data like email, username,etc back to client
+    res.json(new ApiResponse(201, 'User Registered Successfully'))
 })
 
 const login = asyncHandler(async (req, res)=>{
     
-    const {email, username, password} = req.body;
+    const {email, username, password} = req.validated;
         
     const log = await userService.login({email, username, password});
 
-    const options = {
-        httpOnly: true,
-        secure: true
-        }
-
-        res.status(200)
-        .cookie("accessToken", log.accessToken, options)
-        .cookie("refreshToken", log.refreshToken, options)
-        .send('User Logged-in')
+    //log-in check at controller level
+    res
+    .cookie("accessToken", log.accessToken, options)
+    .cookie("refreshToken", log.refreshToken, options)
+    .json(new ApiResponse(200, 'User Logged-in'));
 })
 
 
@@ -36,41 +35,32 @@ const logoutUser = asyncHandler(async(req,res)=>{
 
     const remove = await userService.logoutUser(id);
 
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
-
-    res.status(200)
+    res
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
-    .send("user logged out");
+    .json(new ApiResponse(200, "user logged out"));
     
 })
-interface User{
-    username: string,
-    email: string,
-    firstname: string,
-    lastname: string,
-    bio: string
-}
+
 const updateProfile = asyncHandler(async(req,res)=>{
-    const {username, firstname, lastname, email} = req.body;
+    const {username, firstname, lastname, email} = req.validated;
     const {id} = req.user;
 
     const updateUser = await userService.updateProfile({username, firstname, lastname, email, id})
 
-    res.status(201).send(updateUser)
+    //response validation received from service level
+
+    res.json(new ApiResponse(201,"User Profile Successfully updated"))
 
 })
 
 const me = asyncHandler(async(req,res)=>{
-    //add service logic on this controller 
+    //add service logic on this controller or not to ?
         const userInfo = await userQuery.userAllInfo(req.user.id);
         
         if(!userInfo) throw new Error(`User not found with Id: ${req.user.id}`);
 
-    res.status(200).json(userInfo);     
+    res.json(new ApiResponse(200, "Successfully Fetched User",userInfo));
 })
 
 const deleteUser = asyncHandler(async(req, res)=>{
@@ -80,58 +70,48 @@ const deleteUser = asyncHandler(async(req, res)=>{
 
     if(!deleteUser) throw new Error(`error faced when deleting User, Try Again`);
 
-    res.status(200).send(`user Deleted successfully`);
+    res.json(new ApiResponse(200, 'user Deleted successfully'));
 })
 
 const refreshAccessToken = asyncHandler(async(req,res)=>{
+// do we need to add more checks to this like cookie validation etc
     const {refreshToken} = req.cookies;
-    console.log(refreshToken)
 
     const token = await userService.refreshAccessToken(refreshToken);
-    
-    const options = {
-        httpOnly: true,
-        secure: true
-        }
 
     res
-    .status(200)
     .cookie("accessToken",token.accessToken, options)
     .cookie("refreshToken", token.refreshToken, options)
-    .send('Access token generated successfully')
+    .json(new ApiResponse(201, 'Access token generated successfully'));
 })
 
 // Reset Password Controller
 
 const resetPassword = asyncHandler(async(req, res)=>{
-    const {oldPassword, newPassword} = req.body;
+    const {oldPassword, newPassword} = req.validated;
     const {id} = req.user;
 
     const reset = await userService.resetPassword(oldPassword, newPassword, id)
 
     if(!reset) throw new Error (`Error while resetting Password`);
 
-    // create a common options as it is getting repeated
-    const options = {
-        httpOnly: true,
-        secure: true
-        }
+    // create a common options as it is getting repeated - Done
 
-    res.status(200)
+    res
     .clearCookie("accessToken",options)
     .clearCookie("refreshToken", options)
-    .send(`Password reset successfully, please login again with new password`);
+    .json(new ApiResponse(200, 'Password reset successfully, please login again with new password'));
 
 })
 
 const updateProfilePic = asyncHandler(async(req, res)=>{
-    console.log(req.file);
+// I can add more input validation for path and filename too.
     const {path, filename} = req.file;
-    const {id} = req.res.locals.user;
+    const {id} = req.user;
 
     const uploadProfilePicS3 = await userService.uploadProfilePic(path, filename, id);
 
-    res.status(200).send(`Profile photo uploaded successfully: ${uploadProfilePicS3}`)
+    res.json(new ApiResponse(200, `Profile photo uploaded successfully: ${uploadProfilePicS3}`));
 })
 
 const verifyEmail = asyncHandler(async(req, res)=>{
