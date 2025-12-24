@@ -19,7 +19,7 @@ const createBlog = asyncHandler(async(req, res)=>{
 const uploadImage = asyncHandler(async(req,res)=>{
     const {id} = req.user;
     const description = req.body.description;
-    const blogId = req.params.id;
+    const blogId = req.params.id;0
 
     const {path, filename} = req.file;
 
@@ -52,7 +52,7 @@ const editBlog = asyncHandler(async(req, res)=>{
 
     if(!blogContent) throw new Error (`Error while processing your request, try again`);
 
-    res.status(200).json(blogContent);
+    res.json(new ApiResponse(200, "Blog Content fetched Successfully", blogContent));
 })
 
 const getAllDraft = asyncHandler(async(req, res)=>{
@@ -62,8 +62,7 @@ const getAllDraft = asyncHandler(async(req, res)=>{
 
     if(!allDraft) throw new Error(`Error while fetching the drafts: ${allDraft}`);
 
-    res.status(200).json(allDraft);
-
+    res.json(new ApiResponse(200, "Successfully Returned all Drafts", allDraft));
 })
 
 // Update this controller and return blog content with user interaction details like comments, views, etc
@@ -87,7 +86,7 @@ const getAllPublished = asyncHandler(async(req, res)=>{
 
     if(!allPublished) throw new Error(`Error while fetching the published blogs`);
 
-    res.status(200).json(allPublished);
+    res.json(new ApiResponse(200, "Successfully Returned all Published Blogs", allPublished));
 })
 
 const publishBlog = asyncHandler(async(req, res)=>{
@@ -99,7 +98,7 @@ const publishBlog = asyncHandler(async(req, res)=>{
 
     if(!published) throw new Error (`Error while publishing the blog, please try again`);
 
-    res.status(200).send(`blog successfully published!`);
+    res.json(new ApiResponse(200, 'blog successfully published!'));
 })
 
 const getUnlistedBlogs = asyncHandler(async(req, res)=>{
@@ -109,7 +108,7 @@ const getUnlistedBlogs = asyncHandler(async(req, res)=>{
 
     if(!unlistedBlogs) throw new Error (`Error while processing request to get unlisted blogs`);
 
-    res.status(200).json(unlistedBlogs);
+    res.json(new ApiResponse(200, 'Successsfully Returned all Unlisted Blogs', unlistedBlogs));
 })
 
 const deleteBlog = asyncHandler(async(req, res)=>{
@@ -120,14 +119,13 @@ const deleteBlog = asyncHandler(async(req, res)=>{
 
     if(!deleted) throw new Error (`Error while deleting the blog, please try again`);
 
-    res.status(200).json({
-        message: `Blog with ID: ${blogId}, deleted successfully`
-    })
+    res.json(new ApiResponse(200, `Blog with ID: ${blogId}, deleted successfully`));
 })
 
 const unlistBlog = asyncHandler(async(req,res)=>{
     const {id} = req.user;
     const blogId = req.params.id;
+    // Should the status part to be hard coded as unlist
     const {status} = req.body;
 
     if(!blogId) throw new ApiError ('Blog ID is required', 400);
@@ -144,6 +142,7 @@ const unlistBlog = asyncHandler(async(req,res)=>{
 const saveAndPublish = asyncHandler(async(req, res)=>{
     const {id} = req.user;
     const blogId = req.params.id;
+    // Should the status part to be hard coded as published
     const {title, content, status} = req.body;
 
     if(!blogId) throw new ApiError('blogId is required, cannot proceed with blogId', 400);
@@ -165,7 +164,6 @@ const getAllPublishedBlogs = asyncHandler(async(req, res)=>{
     if(!blogs) throw new ApiError("Can't fetch the blogs", 400);
 
     res.json(new ApiResponse(200, 'Returned all publshed blogs', blogs));
-
 })
 
 // this will be deprecated for public route as we will shift from id to title, or other unique thing
@@ -179,137 +177,16 @@ const getBlog = asyncHandler(async(req, res)=>{
     res.json(new ApiResponse(200, 'Blog with Id fetched successfully', blog));
 })
 
+//Pending
 const search = asyncHandler(async(req, res)=>{
     const searchParam = req.query.q;
 
     if(!searchParam) throw new ApiError('Cannot get result without the params', 400);
 
     const result = await blogService.search(searchParam);
-
 })
 
-const bookmark = asyncHandler(async(req, res)=>{
-    const userId = req.user.id;
-    const {id} = req.params;
 
-    if(!id) throw new ApiError('Blog ID is required',400);
-
-    const bookmark = await blogService.blogBookmark(id, userId);
-
-    if(!bookmark) throw new ApiError('Blog not bookmarked, try again', 400);
-
-    res.json(new ApiResponse(200, 'Blog bookmarked successfully', bookmark));
-})
-
-const removeBookmark = asyncHandler(async(req, res)=>{
-    const userId = req.user.id;
-    const blogId = req.params.id;
-
-    if(!blogId) throw new ApiError('Blog ID is required',400);
-
-    const removed = await blogService.removeBookmark(userId, blogId);
-
-    res.json(new ApiResponse(204, 'User Liked Removed Successfully', removed))
-})
-
-const likeBlog = asyncHandler(async(req, res)=>{
-    const userId = req.user.id;
-    const {id} = req.params;
-
-    if(!id) throw new ApiError('Blog ID is required',400);
-
-    const like = await blogService.likeBlog(id, userId);
-
-    res.json(new ApiResponse(200, 'User liked the blog successfully', like))
-
-})
-
-const removeLike = asyncHandler(async(req, res)=>{
-    const userId = req.user.id;
-    const blogId = req.params.id;
-
-    if(!blogId) throw new ApiError('Blog ID is required',400);
-
-    const removed = await blogService.removeLike(userId, blogId);
-
-    res.json(new ApiResponse(204, 'User Liked Removed Successfully', removed))
-})
-
-const comment = asyncHandler(async(req, res)=>{
-    const {comment} = req.body;
-    const {id} = req.params;
-    const userId = req.user.id;
-
-    if(!comment) throw new ApiError('User Comment input is required', 400);
-
-    if(!id) throw new ApiError('Blog ID is required',400);
-
-    const blogComment = await blogService.comment(id, userId, comment);
-
-    if(!blogComment) throw new ApiError('error whiling processing your request to post a comment', 400);
-
-    res.json(new ApiResponse(200, 'Commnt posted Successfully', comment));
-})
-
-const editComment = asyncHandler(async(req, res)=>{
-    const {comment} = req.body;
-    const userId = req.user.id;
-    const commentId = req.params.id;
-
-    if(!comment) throw new ApiError('Updated Comment is required', 406);
-
-    if(!commentId) throw new ApiError('Comment Id is required, cannot proceed without it', 406);
-
-    const edited = await blogService.editComment(userId, commentId, comment);
-
-    res.json(new ApiResponse(200, 'Comment edited successfully', edited))
-})
-
-const deleteComment = asyncHandler(async(req, res)=>{
-    const userId = req.user.id;
-    const commentId = req.params.id;
-
-    if(!commentId) throw new ApiError('Comment Id is required, cannot proceed without it', 406);
-
-    const deleted = await blogService.deleteComment(userId, commentId);
-
-    res.json(new ApiResponse(200, 'Comment Deleted Successfully'));
-})
-
-const likeComment = asyncHandler(async(req, res)=>{
-    const commentId = req.params.id;
-    const userId = req.user.id;
-
-    if(!commentId) throw new ApiError('Comment ID is required', 400);
-
-    const likeComment = await blogService.likeComment(commentId, userId);
-
-    if(!likeComment) throw new ApiError('Internl error faced while processing your request to like the comment, try again', 400);
-    
-    res.json(new ApiResponse(200, 'Comment liked Successfully', likeComment))
-})
-
-const getComment = asyncHandler(async(req, res)=>{
-    const userId = req.user.id;
-    const blogId = req.params.id;
-
-    if(!blogId) throw new ApiError('Blog ID is required', 400);
-
-    const comment = await blogService.getComment(userId, blogId);
-
-    res.json(new ApiResponse(200, 'Comment data successfully returned', comment));
-})
-
-const removeCommentLike = asyncHandler(async(req, res)=>{
-    const userId = req.user.id;
-    const commentId = req.params.id;
-
-    if(!commentId) throw new ApiError('Comment ID is required', 400);
-
-    const removed = await blogService.removeCommentLike(userId, commentId);
-
-    res.json(new ApiResponse(200,'Successfully removed like from commeny'));
-})
 export default {
     createBlog,
     saveChanges,
@@ -325,15 +202,5 @@ export default {
     saveAndPublish,
     getAllPublishedBlogs,
     getBlog,
-    search,
-    bookmark,
-    removeBookmark,
-    likeBlog,
-    removeLike,
-    comment,
-    editComment,
-    deleteComment,
-    likeComment,
-    removeCommentLike,
-    getComment
+    search
 }
