@@ -1,4 +1,4 @@
-import blogService from "../services/blog.service.js";
+import blogEngagement from "../services/blog-engagement.service.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";

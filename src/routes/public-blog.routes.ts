@@ -1,6 +1,7 @@
 import {Router} from "express";
 import blogController from "../controllers/blog.controller.js";
 import {auth} from "../middlewares/auth.middleware.js";
+import blogEngagementController from "../controllers/blog-engagement.controller.js";
 
 const router = Router();
 
@@ -15,24 +16,24 @@ router.route('/tag/:tag').get(); //check can we pass alphabets/string in :tag th
 router.route('/:id').get(blogController.getBlog) //get blog by id
 
 router.route('/:id/bookmark')
-    .post(auth, blogController.bookmark)
-    .delete(auth, blogController.removeBookmark) //- remove the bookmark
+    .post(auth, blogEngagementController.bookmark)
+    .delete(auth, blogEngagementController.removeBookmark) //- remove the bookmark
 
 router.route('/:id/like')
-    .post(auth, blogController.likeBlog)
-    .delete(auth, blogController.removeLike) //- remove the like
+    .post(auth, blogEngagementController.likeBlog)
+    .delete(auth, blogEngagementController.removeLike) //- remove the like
 
 router.route('/:id/comments')
-    .get(auth, blogController.getComment)
-    .post(auth, blogController.comment)
+    .get(auth, blogEngagementController.getComment)
+    .post(auth, blogEngagementController.comment)
 
 router.route('/comments/:id')
-    .patch(auth, blogController.editComment)
-    .delete(auth, blogController.deleteComment)
+    .patch(auth, blogEngagementController.editComment)
+    .delete(auth, blogEngagementController.deleteComment)
 
 router.route('/comments/:id/like')
-    .post(auth, blogController.likeComment)
-    .delete(auth, blogController.removeCommentLike);
+    .post(auth, blogEngagementController.likeComment)
+    .delete(auth, blogEngagementController.removeCommentLike);
 
 /*
 20. /api/v1/blogs/explore-topic - return all the topics like: life, self-improvement, etc with sub-topics and also allow to search a tag/topic and this will get them to /api/v1/blogs/tag/topics(career, etc) route.
